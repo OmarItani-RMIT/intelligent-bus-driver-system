@@ -22,7 +22,6 @@ intelligent-bus-driver-system/
 │       ├── integration/DriverIntegrationTest.java
 │       ├── unit/BusUnitTest.java
 │       └── unit/DriverUnitTest.java
-├── data/
 ├── pom.xml
 └── .gitignore
 ```
