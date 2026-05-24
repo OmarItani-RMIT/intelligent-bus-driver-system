@@ -55,7 +55,7 @@ public class Driver {
      */
     private boolean isValid(String driverID, int experienceYears,
                   String licenseType, String address, String birthdate) {
-
+                    
         boolean isValid = false;
         
         isValid = (isDriverIDValid(driverID) && isDriverIDValid(driverID) && isBirthDateValid(birthdate));
@@ -69,6 +69,8 @@ public class Driver {
      * @return returns true if the rule is met
      */
     private boolean isDriverIDValid(String driverID){
+        //checks the driver id based on the following clauses:
+    
         /** [C1] Clause One: Id must be exactly 10 chars */
         boolean isValLength = false;
 
@@ -81,78 +83,106 @@ public class Driver {
         /** [C4] Clause Four: last 2 characters must be uppercase letters (A-Z) */
         boolean isLastUppercase = false;
 
+        // if any fail, we return false early to save runtime.
 
         // --Check C1------------------------------------------------------------------------------------------------------
+        //ensure the length is exactly 10, if so the clause is passed
         if((driverID.length() == 10)){
             isValLength = true;
         }
         else {
-            return false;
+            return false; //early exit clause
         }
 
-        // // --Check C2------------------------------------------------------------------------------------------------------
+        // --Check C2------------------------------------------------------------------------------------------------------
+        
+        // variables for the first character
         boolean firstCharVal = false;
         char firstChar = driverID.charAt(0);
 
+        // variables for the second character
         boolean secondCharVal = false;
         char secondChar = driverID.charAt(1);
 
+        // the valid digits 2 through 9
         char[] validDigits = {'2', '3', '4', '5', '6', '7', '8', '9'};
 
+        // for each digit in the valid digits array, check if the first or second character matches them
         for (char digit : validDigits){
             if (firstChar == digit) firstCharVal = true;
             if (secondChar == digit) secondCharVal = true;
         }
 
+        //check to ensure both characters were found to match. If so, the clause is passed
         if (firstCharVal && secondCharVal){ 
             isFirstDigits = true; 
         }
         else {
-            return false;
+            return false; //early exit clause
         }
 
 
         // --Check C3------------------------------------------------------------------------------------------------------
+        
+        //counter variable
         int specialCount = 0;
+
+        //for every character from the third position (index 2) to the end of the id:
         for (int index = 2; index < driverID.length(); index++){
+
+            // check if the character is not an integer, letter, or whitespace (implying it is a special character)
             if( !(Character.isDigit(driverID.charAt(index))) && !(Character.isAlphabetic(driverID.charAt(index)))
                  && !(Character.isWhitespace(driverID.charAt(index)))){
+
+                    //increment counter
                     specialCount++;
             }
         }
         
+        //if there are 2 or more special characters found, clause satisfied
         if(specialCount >= 2){ 
             isSpecialChar = true;
         }
         else {
-            return false;
+            return false; // early exit clause
         }
 
         // --Check C4------------------------------------------------------------------------------------------------------
+
+        // variable for the id's length
         int idLength = driverID.length();
 
+        // variables for the last character
         boolean lastCharVal = false;
         char lastChar = driverID.charAt(idLength - 1);
 
+        // variables for the second last character
         boolean secLastCharVal = false;
         char secondLastChar = driverID.charAt(idLength - 2);
 
+        // check if the last character is alphabetic
         if(Character.isAlphabetic(lastChar)){
+            //check if the last character is uppercase
             if(Character.isUpperCase(lastChar)) lastCharVal = true;
         }
-        
-         if(Character.isAlphabetic(secondLastChar)){
+
+        // check if the second to last character is alphabetic
+        if(Character.isAlphabetic(secondLastChar)){
+            // check if the second to last character is uppercase
             if(Character.isUpperCase(secondLastChar)) secLastCharVal = true;
         }
 
+        // if both pass, the clause is satisfied
         if(lastCharVal && secLastCharVal){ 
             isLastUppercase = true; 
         }
         else {
-            return false;
+            return false; // early exit clause
         }
 
 
+        // If we get here it is implied that the statement below is always true, but
+        // we check it anyways: Return the result of all clauses
         return (isValLength && isFirstDigits && isSpecialChar && isLastUppercase);
     }
 
@@ -162,11 +192,17 @@ public class Driver {
      * @return returns true if the rule is met
      */
     private boolean isAddressValid(String address){
-        boolean isValid = false;
+        // checks the validity of the address by checking that if we use .split using the regex character '|', we get 5
+        // segments. Returns true if so.
 
-        //TODO: Implement isAddressValid logic
+        // split the string
+        String[] addressSplit = address.split("\\|");
 
-        return isValid;
+        // check number of items in array
+        if ((addressSplit.length == 5)){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -175,14 +211,41 @@ public class Driver {
      * @return returns true if the rule is met
      */
     private boolean isBirthDateValid(String birthdate){
-        boolean isValid = false;
+        // checks the validity of the birthdate by checking that if we use .split using the regex character '-', we get 3
+        // segments that can be converted to integers.
+        boolean isValid = true;
 
-        //TODO: Implement isBirthDateValid logic
+
+        // split the string
+        String[] birthdateSplit = birthdate.split("-");
+        
+
+        // check number of items in array
+        if ((birthdateSplit.length == 3)){
+            //loop over string array birthdateSplit to ensure each section is a number
+            for (String num : birthdateSplit){
+                if (stringIsPosNumeric(num)) isValid = false;
+            }
+        }
+        //set isValid to false if the number of items is invalid
+        else isValid = false;
 
         return isValid;
 
     }
 
+    /**
+     * Simple helper function for checking that a string is a positive number
+     * @param str string to check
+     * @return returns true if it finds no non numeric characters, false if it does
+     */
+    private boolean stringIsPosNumeric(String str){
+        //loop over string to find any characters that arent a digit
+        for (char ch : str.toCharArray()){
+            if (!(Character.isDigit(ch))) return false; //cut early if the char found isnt a digit
+        }
+        return true;
+    }
 
 
 
