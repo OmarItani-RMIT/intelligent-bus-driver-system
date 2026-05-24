@@ -104,7 +104,12 @@ public class Driver {
             if (secondChar == digit) secondCharVal = true;
         }
 
-        if (firstCharVal && secondCharVal) isFirstDigits = true;
+        if (firstCharVal && secondCharVal){ 
+            isFirstDigits = true; 
+        }
+        else {
+            return false;
+        }
 
 
         // --Check C3------------------------------------------------------------------------------------------------------
@@ -116,7 +121,12 @@ public class Driver {
             }
         }
         
-        if(specialCount >= 2) isSpecialChar = true;
+        if(specialCount >= 2){ 
+            isSpecialChar = true;
+        }
+        else {
+            return false;
+        }
 
         // --Check C4------------------------------------------------------------------------------------------------------
         int idLength = driverID.length();
@@ -135,7 +145,12 @@ public class Driver {
             if(Character.isUpperCase(secondLastChar)) secLastCharVal = true;
         }
 
-        if(lastCharVal && secLastCharVal) isLastUppercase = true;
+        if(lastCharVal && secLastCharVal){ 
+            isLastUppercase = true; 
+        }
+        else {
+            return false;
+        }
 
 
         return (isValLength && isFirstDigits && isSpecialChar && isLastUppercase);

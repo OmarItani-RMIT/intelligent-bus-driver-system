@@ -18,6 +18,8 @@ public class Bus {
     private double fuelLevel;
     private String fuelType;  // Diesel, Hybrid, Electricity
 
+
+
     // TODO: Implement constructor with all fields
     public Bus(String busID, int capacity, double fuelLevel, String fuelType) {
         // TODO: Assign all parameters to fields
