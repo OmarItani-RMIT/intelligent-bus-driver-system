@@ -69,11 +69,76 @@ public class Driver {
      * @return returns true if the rule is met
      */
     private boolean isDriverIDValid(String driverID){
-        boolean isValid = false;
+        /** [C1] Clause One: Id must be exactly 10 chars */
+        boolean isValLength = false;
 
-        //TODO: Implement isDriverIDValid logic
+        /** [C2] Clause Two: first 2 digits must be 2-9 */
+        boolean isFirstDigits = false;
 
-        return isValid;
+        /** [C3] Clause Three: at least 2 special chars in positions 3-8 */
+        boolean isSpecialChar = false;
+
+        /** [C4] Clause Four: last 2 characters must be uppercase letters (A-Z) */
+        boolean isLastUppercase = false;
+
+
+        // --Check C1------------------------------------------------------------------------------------------------------
+        if((driverID.length() == 10)){
+            isValLength = true;
+        }
+        else {
+            return false;
+        }
+
+        // // --Check C2------------------------------------------------------------------------------------------------------
+        boolean firstCharVal = false;
+        char firstChar = driverID.charAt(0);
+
+        boolean secondCharVal = false;
+        char secondChar = driverID.charAt(1);
+
+        char[] validDigits = {'2', '3', '4', '5', '6', '7', '8', '9'};
+
+        for (char digit : validDigits){
+            if (firstChar == digit) firstCharVal = true;
+            if (secondChar == digit) secondCharVal = true;
+        }
+
+        if (firstCharVal && secondCharVal) isFirstDigits = true;
+
+
+        // --Check C3------------------------------------------------------------------------------------------------------
+        int specialCount = 0;
+        for (int index = 2; index < driverID.length(); index++){
+            if( !(Character.isDigit(driverID.charAt(index))) && !(Character.isAlphabetic(driverID.charAt(index)))
+                 && !(Character.isWhitespace(driverID.charAt(index)))){
+                    specialCount++;
+            }
+        }
+        
+        if(specialCount >= 2) isSpecialChar = true;
+
+        // --Check C4------------------------------------------------------------------------------------------------------
+        int idLength = driverID.length();
+
+        boolean lastCharVal = false;
+        char lastChar = driverID.charAt(idLength - 1);
+
+        boolean secLastCharVal = false;
+        char secondLastChar = driverID.charAt(idLength - 2);
+
+        if(Character.isAlphabetic(lastChar)){
+            if(Character.isUpperCase(lastChar)) lastCharVal = true;
+        }
+        
+         if(Character.isAlphabetic(secondLastChar)){
+            if(Character.isUpperCase(secondLastChar)) secLastCharVal = true;
+        }
+
+        if(lastCharVal && secLastCharVal) isLastUppercase = true;
+
+
+        return (isValLength && isFirstDigits && isSpecialChar && isLastUppercase);
     }
 
     /**
@@ -114,11 +179,19 @@ public class Driver {
     public String getAddress() { return this.address; }
     public String getBirthdate() { return this.birthdate; }
 
+
+
     //SETTERS: (note: NO setter for driverID and name - they are immutable per D5)
     public void setExperienceYears(int experienceYears) { this.experienceYears = experienceYears; }
     public void setLicenseType(String licenseType) { this.licenseType = licenseType; }
-    public void setAddress(String address) { if(isAddressValid(address)) this.address = address; }
+
+    public void setAddress(String address) { if(isAddressValid(address)) this.address = address; } //one line if statements are so fancy >u>
     public void setBirthdate(String birthdate) { if(isBirthDateValid(birthdate)) this.birthdate = birthdate; }
+
+
+
+
+
 
     // TODO: Implement toFileString() - converts Driver to pipe-delimited string for TXT storage
     // Format: driverID|name|experienceYears|licenseType|StreetNum|StreetName|City|State|Country|birthdate
