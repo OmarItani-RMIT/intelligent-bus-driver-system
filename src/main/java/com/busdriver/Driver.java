@@ -72,10 +72,37 @@ public class Driver {
 
     // TODO: Implement toFileString() - converts Driver to pipe-delimited string for TXT storage
     // Format: driverID|name|experienceYears|licenseType|StreetNum|StreetName|City|State|Country|birthdate
-    public String toFileString() { return null; }
+    public String toFileString() { 
+        String returnString = "";
 
-    // TODO: Implement fromFileString() - creates Driver from pipe-delimited string
-    public static Driver fromFileString(String line) { return null; }
+        returnString = driverID + "|" + name + "|" + experienceYears + "|" + licenseType + "|" + address + "|" + birthdate;
+
+        return returnString;
+     }
+
+    
+    public static Driver fromFileString(String line) { 
+        //return variable
+        Driver returnDriver = null;
+
+        //Split based on regex |
+        String[] splitLine = line.split("\\|");
+
+        //Store each part in its own variable
+        String driverID = splitLine[0], name = splitLine[1],
+                liscenceType = splitLine[3], StreetNum = splitLine[4], StreetName = splitLine[5],
+                City = splitLine[6], State = splitLine[7], Country = splitLine[9], birthdate = splitLine[10];
+        int experienceYears = Integer.parseInt(splitLine[2]);
+
+        // construct the address part
+        String address = StreetNum + "|" + StreetName + "|" + City + "|" + State + "|" + Country + "|";
+
+        // create a new driver
+        returnDriver = new Driver(driverID, name, experienceYears, liscenceType, address, birthdate);
+
+        // return the driver
+        return returnDriver;
+     }  
 
     @Override
     public String toString() { return "Driver{}"; }
