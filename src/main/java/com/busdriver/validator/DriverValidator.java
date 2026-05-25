@@ -15,7 +15,6 @@ import com.busdriver.Driver;
  */
 public class DriverValidator {
 
-    // TODO: Implement validateDriver() - validates entire Driver object against D1-D3
 
     /**
      * Helper method for validating the parameters of the constructor
@@ -67,7 +66,8 @@ public class DriverValidator {
             isValLength = true;
         }
         else {
-           throw new IllegalArgumentException("[D1, C1 FAILED] Driver ID is not exactly 10 characters.");
+           throw new IllegalArgumentException("[D1, C1 FAILED] Driver ID is not exactly 10 characters, got " 
+                                                    + Integer.toString(driverID.length()));
         }
 
         // --Check C2------------------------------------------------------------------------------------------------------
@@ -94,10 +94,12 @@ public class DriverValidator {
             isFirstDigits = true; 
         }
         else if (!(firstCharVal)){
-            throw new IllegalArgumentException("[D1, C2 FAILED] Driver ID's FIRST character is not a digit 2-9");
+            throw new IllegalArgumentException("[D1, C2 FAILED] Driver ID's FIRST character is not a digit 2-9, got " 
+                                            + firstChar);
         }
         else if (!(secondCharVal)){
-            throw new IllegalArgumentException("[D1, C2 FAILED] Driver ID's SECOND character is not a digit 2-9");
+            throw new IllegalArgumentException("[D1, C2 FAILED] Driver ID's SECOND character is not a digit 2-9"
+                                            + secondChar);
         }
 
 
@@ -123,7 +125,10 @@ public class DriverValidator {
             isSpecialChar = true;
         }
         else {
-            throw new IllegalArgumentException("[D1, C3 FAILED] Driver ID doesn't have 2 or more special characters from the third position to the last position.");
+            throw new IllegalArgumentException(
+                "[D1, C3 FAILED] Driver ID doesn't have 2 or more special characters from the third position to the last position, got " +
+                Integer.toString(specialCount) + " character/s."
+            );
         }
 
         // --Check C4------------------------------------------------------------------------------------------------------
@@ -156,10 +161,10 @@ public class DriverValidator {
             isLastUppercase = true; 
         }
         else if (!(lastCharVal)){
-            throw new IllegalArgumentException("[D1, C4 FAILED] LAST character in ID is not an uppercase letter");
+            throw new IllegalArgumentException("[D1, C4 FAILED] LAST character in ID is not an uppercase letter, got " + lastChar);
         }
         else if (!(secLastCharVal)){
-            throw new IllegalArgumentException("[D1, C4 FAILED] SECOND LAST character in ID is not an uppercase letter");
+            throw new IllegalArgumentException("[D1, C4 FAILED] SECOND LAST character in ID is not an uppercase letter, got" + secondChar);
         }
 
 
@@ -200,18 +205,19 @@ public class DriverValidator {
 
         }
         else if ((addressSplit.length > 5)){
-            throw new IllegalArgumentException("[D2 FAILED] Address has more than 5 parts ");
+            throw new IllegalArgumentException("[D2 FAILED] Address has more than 5 parts, got " + addressSplit.length + " parts.");
         }
         else if ((addressSplit.length < 5)){
-            throw new IllegalArgumentException("[D2 FAILED] Address has less than 5 parts ");
+            throw new IllegalArgumentException("[D2 FAILED] Address has less than 5 parts, got " + addressSplit.length + " parts.");
         }
         else{
-            throw new IllegalArgumentException("[D2 FAILED] Address does not have 5 parts "); //stops "error: must return something"
+            throw new IllegalArgumentException("[D2 FAILED] Address does not have 5 parts, got " + addressSplit.length + " parts.");
+            //stops "error: must return something"
         }
         
     }
 
-    // TODO: Implement validateBirthdate() - D3: Birthdate format validation
+
     /**
      * helper method for validating the bus drivers birthdate
      * @param birthdate the birthdate of the driver in the following format: DD-MM-YYYY
@@ -245,7 +251,7 @@ public class DriverValidator {
             int month = Integer.parseInt(birthdateSplit[1]);
 
             if (day < 1){
-                throw new IllegalArgumentException("[D3 FAILED] day must more than or equal to 1.");
+                throw new IllegalArgumentException("[D3 FAILED] day must more than or equal to 1, got " + Integer.toString(day));
             }
 
             if (month == 2){
