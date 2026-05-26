@@ -1,6 +1,13 @@
 package com.busdriver.validator;
 
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.util.Date;
+
 import com.busdriver.Driver;
+
+
+import java.time.Period;
 
 /**
  * Validator class for Driver-related operations.
@@ -412,6 +419,32 @@ public class DriverValidator {
     // TODO: Implement calculateAge() - helper to calculate driver age from birthdate
     public static int calculateAge(String birthdate) {
         // Parse DD-MM-YYYY and calculate age using LocalDate and Period
-        return 0;
+        
+        // validate the birthdate parameter
+        if(!(validateBirthdate(birthdate))){
+            throw new IllegalArgumentException("Date format is not correct.");
+        }
+
+
+        //split the input string into dd mm and yyyy
+        String[] dateSplit = birthdate.split("-");
+        
+        // store each part as an int
+        int day = Integer.parseInt(dateSplit[0]); // day
+        int month = Integer.parseInt(dateSplit[1]); // month
+        int year = Integer.parseInt(dateSplit[2]); // year
+
+        // store the ints as a LocalDate object
+        LocalDate birthDate =  LocalDate.of(year, month, day);
+
+        // get the current date using the system clock
+        LocalDate currDate = LocalDate.now();
+
+        // calculate the amount of years between the birthdate and the current date.
+        int years = Period.between(birthDate, currDate).getYears();
+
+
+        // return answer
+        return years;
     }
 }
