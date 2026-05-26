@@ -18,6 +18,12 @@ public class BusValidator {
     // TODO: Implement validateBus() - validates entire Bus object against B1
     public static boolean validateBus(Bus bus) {
         // TODO: Call all individual validation methods
+
+
+
+        
+
+
         return true;
     }
 
@@ -27,7 +33,56 @@ public class BusValidator {
         // - Must be exactly 8 characters long
         // - All characters must be digits (0-9)
         // Throw IllegalArgumentException with descriptive message if invalid
-        return true;
+
+        
+
+        // [C1] The bus id must be exactly 8 characters long
+        boolean isValidLength = false;
+        final int VALIDLENGTH = 8; // valid length size is 8
+
+        // [C2] The bus id must consist of only digits
+        boolean isValidFormat = true;
+
+
+        // [C1] VALIDATION
+        int idLength = busID.length(); //length of the busID
+
+        if (idLength == VALIDLENGTH) isValidLength = true; // if the idLength matches VALIDLENGTH, it passed
+
+        // otherwise, throw an exception
+        else if (idLength < VALIDLENGTH){ 
+            isValidLength = false;
+            throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is LESS than the valid length, got " + idLength);
+        }   
+        else if (idLength > VALIDLENGTH){
+            isValidLength = false;
+            throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is MORE than the valid length, got " + idLength);
+        }
+
+        // [C2] VALIDATION
+        char[] busIDArray = busID.toCharArray(); // Bus ID converted to an array of characters, for easy looping
+        int busArrayLength = busIDArray.length;
+
+        // For each index from 0 to the length of the busIDArray (array of characters), check if the character at that
+        // index is not a digit, and if it isnt set the isValidFormat bool to false and throw and exception. 
+        for (int index = 0; index < busArrayLength; index++){
+            if (!(Character.isDigit(busIDArray[index]))) { 
+                isValidFormat = false; 
+                throw new IllegalArgumentException("[B1 C2 FAILED] Character at position {" + index + "} is not a digit, got " + busIDArray[index]);
+            }
+        }
+
+
+        if ((isValidLength) && (isValidFormat)){
+            return true;
+        }
+        else if (!(isValidLength)){
+            throw new IllegalArgumentException("[B1 C1 FAILED]"); // Should be unreachable but still throws descriptive exception 
+        }
+        else { //stops error must return a boolean (also implicitly only fires if (!(isValidFormat)) )
+            throw new IllegalArgumentException("[B1 C2 FAILED]"); // Should be unreachable but still throws descriptive exception 
+        }   
+
     }
 
     // TODO: Implement validateCapacityUpdate() - B2: Capacity update restriction
