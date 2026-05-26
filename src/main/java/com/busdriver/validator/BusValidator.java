@@ -184,7 +184,44 @@ public class BusValidator {
     public static boolean validateDriverLicenceRestriction(Driver driver, Bus bus) {
         // B5: Only Heavy or PublicTransport license holders can drive
         //     electric (Electricity) or hybrid (Hybrid) buses
-        return true;
+
+        // Constant bus variables
+        final String ELECTRIC_CLASSIFIER = "Electricity";
+        final String HYBRID_CLASSIFIER = "Hybrid";
+
+        // Constant driver variables
+        final String HEAVY_LISCENCE_CLASSIFIER = "Heavy";
+        final String PUBLICTRANSPORT_LISCENCE_CLASSIFIER = "PublicTransport";
+
+
+        // Driver variables
+        String currLiscence = driver.getLicenseType();
+
+        // Bus Variables
+        String currFuelType = bus.getFuelType();
+
+
+        // if driver doesnt have a heavy liscence or public transport liscence, check the bus's fuel type
+        if (!((currLiscence.equals(HEAVY_LISCENCE_CLASSIFIER)) || (currLiscence.equals(PUBLICTRANSPORT_LISCENCE_CLASSIFIER)))){
+            // if the bus's fuel type matches either of the classifiers, they cannot drive the bus
+            if ((currFuelType == ELECTRIC_CLASSIFIER) || (currFuelType == HYBRID_CLASSIFIER)){
+                throw new IllegalArgumentException("[B5 FAILED] Bus driver of type " + currLiscence + " cannot drive a bus of type " + currFuelType);
+                
+                //TODO: might need to use this instead if i've miss understood this:
+                //return false;
+            }
+            // otherwise, they can drive the bus
+            else{
+                return true;
+            }    
+        }
+        // otherwise, the bus driver doesnt have any restrictions
+        else {
+            return true;
+        }
+
+
+        
     }
 
     // TODO: Implement validateFuelType() - helper for fuel type validation
