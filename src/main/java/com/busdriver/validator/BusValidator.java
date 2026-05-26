@@ -246,7 +246,16 @@ public class BusValidator {
     // TODO: Implement validateCapacity() - helper for capacity validation
     public static boolean validateCapacity(int capacity) {
         // Must be positive (> 0)
-        return true;
+
+        // if the capacity is above 0, return true
+        if (capacity > 0){
+            return true;
+        }
+        // otherwise return false.
+        else {
+            return false;
+        }
+        
     }
 
     // TODO: Implement validateFuelLevel() - helper for fuel level validation
