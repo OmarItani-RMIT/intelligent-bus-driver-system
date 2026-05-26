@@ -35,14 +35,19 @@ public class BusRepository {
         // 2. Check for duplicate bus ID using retrieve()
         // 3. Append bus.toFileString() to the TXT file
         // Throw IllegalArgumentException if validation fails or duplicate ID
+
+        // validate the bus using the bus validator
         if (!(BusValidator.validateBus(bus))){
             throw new IllegalArgumentException("Bus is invalid and cannot be appended");
         }
 
+        // ensure the busID is unique
         if (!(retrieve(bus.getBusID()).equals(null))){
             throw new IllegalArgumentException("Bus has the same busID as an existing bus, and cannot be appended");
         }
 
+
+        //Append the bus to the file
         File file = new File(filePath);
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
@@ -57,11 +62,10 @@ public class BusRepository {
         } catch (IOException e) {
             throw new RuntimeException("Error writing to bus file: " + e.getMessage(), e);
         }
-
-
-        
     
     }
+
+
 
     // TODO: Implement retrieve() - Retrieve a bus by busID
     public Bus retrieve(String busID) {
@@ -69,6 +73,18 @@ public class BusRepository {
         // 1. Read all buses from file using retrieveAll()
         // 2. Find and return the bus with matching busID
         // 3. Return null if not found
+
+        // Grab the list of busses from the file
+        List<Bus> busses =  retrieveAll();
+
+        // loop through each bus to find the one with a matching busID, and return the bus if found
+        for (Bus bus : busses){
+            if (busID.equals(bus.getBusID())){
+                return bus;
+            }
+        }
+
+        // return null if the busID is not found
         return null;
     }
 
