@@ -325,30 +325,69 @@ public class DriverValidator {
     // TODO: Implement validateLicenseType() - helper for license type validation
     public static boolean validateLicenseType(String licenseType) {
         // Must be one of: Light, Medium, Heavy, PublicTransport
-        return true;
+
+        // list of valid liscence types allowed in the system
+        final String[] VALID_TYPES = {"Light", "Medium", "Heavy", "PublicTransport"};
+
+
+        // for each of the valid liscence types, check if the input parameter matches
+        for (String type : VALID_TYPES) {
+            // if the parameter matches the liscence type, return true.
+            if (licenseType == type) return true;
+        }
+
+        // getting here means we couldnt match the input parameter with a valid liscence type,
+        // return false.
+        return false;
     }
 
     // TODO: Implement validateExperienceYears() - helper for experience validation
     public static boolean validateExperienceYears(int experienceYears) {
-        // Must be non-negative
-        return true;
+        // Must be non-negative, return true if so.
+        return (experienceYears >= 0);
     }
 
     // TODO: Implement validateName() - helper for name validation
     public static boolean validateName(String name) {
-        // Must not be null or empty
-        return true;
+        // Must not be null or empty, return true if so
+        return ((name != null) && !(name.isEmpty()) );
     }
 
     // TODO: Implement validateLicenseUpdateRestriction() - D4
     public static boolean validateLicenseUpdateRestriction(Driver existingDriver, String newLicenseType) {
         // D4: If driver has >10 years experience, licenseType cannot be changed
-        return true;
+        
+        // Constant variables
+        final int RESTRICTED_YEARS_EXPERIENCE = 10;
+
+        // Driver variables
+        int experience = existingDriver.getExperienceYears();
+
+        // check if the drivers experience is higher or equal to the restricted number of years
+        if (experience >= RESTRICTED_YEARS_EXPERIENCE){
+            // if so check if the old liscence type and the new liscence type matches, if they dont, return false
+            if (!(existingDriver.getLicenseType().equals(newLicenseType))){
+                return false;
+            }
+            // otherwise, the driver is not having their liscence updated, so return true
+            else {
+                return true;
+            }
+        }
+        // otherwise the driver has no restrictions, return true;
+        else {
+            return true;
+        }
+
+       
     }
 
+    
     // TODO: Implement validateImmutableFields() - D5
     public static boolean validateImmutableFields(Driver existingDriver, Driver updatedDriver) {
         // D5: driverID and name cannot be modified during update
+
+
         return true;
     }
 
