@@ -127,17 +127,74 @@ public class BusRepository {
         // 2. Call BusValidator.validateCapacityUpdate(existing, newCapacity) - B2
         // 3. Validate updated fields
         // 4. Rewrite entire file with updated bus replacing the old one
+
+        // retrieve the old bus 
+        Bus oldBus = retrieve(updatedBus.getBusID());
+
+        // if the old bus is null, the bus ID could not be found: throw exception
+        if (oldBus == null){
+            throw new IllegalArgumentException("404 bus with busID " + updatedBus.getBusID() + " not found.");
+        }
+
+        // if the bus capacity is set to increase, throw and exception
+        if (!(BusValidator.validateCapacityUpdate(oldBus, updatedBus.getCapacity()))){
+            throw new IllegalArgumentException("[B2 FAILED] Bus cannot increase in capacity while updating." 
+                                            + " Got old capacity of " + oldBus.getCapacity() 
+                                            + " and a new capacity of " + updatedBus.getCapacity());
+        }
+
+        // if the updatedBus parameter isnt a valid bus, throw an exception.
+        if (!(BusValidator.validateBus(updatedBus))){
+            throw new IllegalArgumentException("Update fields for the bus are not valid.");
+        }
+
+
+        // grab all of the busses from the file
+        List<Bus> busses = retrieveAll();
+
+        // find the bus to be updated in the list and replace it in the list.
+        for (int i = 0; i < busses.size(); ++i){
+            if (busses.get(i).getBusID().equals(updatedBus.getBusID())){
+                busses.set(i, updatedBus);
+            }
+        }
+
+        //clear the txt file contents
+        clear();
+        
+        // add each bus back into the text file, overwriting its original contents exactly, except for the updatedBus parameter
+        for (Bus bus : busses) {
+            add(bus);
+        }
+
+        //return true if the replacement worked.
         return true;
     }
 
     // TODO: Implement count() - Return number of stored buses
     public int count() {
         // Simply return retrieveAll().size()
-        return 0;
+        return retrieveAll().size();
     }
 
     // TODO: Implement clear() - Clear all bus data (used for testing)
     public void clear() {
         // Overwrite file with empty content
+
+        // create file and parent variables and make the directory if they dont exist
+        File file = new File(filePath);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        // delete file contents
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to bus file: " + e.getMessage(), e);
+        }
+
     }
 }
