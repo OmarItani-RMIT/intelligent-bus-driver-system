@@ -382,12 +382,30 @@ public class DriverValidator {
        
     }
 
-    
+
     // TODO: Implement validateImmutableFields() - D5
     public static boolean validateImmutableFields(Driver existingDriver, Driver updatedDriver) {
         // D5: driverID and name cannot be modified during update
 
+        // Driver name variables
+        String oldName = existingDriver.getName();
+        String newName = updatedDriver.getName();
 
+        // if the names are not equal, return false as this means they are trying to change it
+        if (!(oldName.equals(newName))){
+            return false;
+        }
+        
+        // Driver ID variables
+        String oldID = existingDriver.getDriverID();
+        String newID = updatedDriver.getDriverID();
+
+        // if the id's are not equal, return false as this means they are trying to change it
+        if (!(oldID.equals(newID))){
+            return false;
+        }
+
+        // return true if neither of the previous checks return false
         return true;
     }
 
