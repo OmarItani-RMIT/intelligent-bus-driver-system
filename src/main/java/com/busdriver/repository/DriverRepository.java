@@ -50,17 +50,49 @@ public class DriverRepository {
         return retrieveAll().size();
     }
 
-    // TODO: Implement the following
-
+    /**
+     * Adds a new driver to the TXT storage after validation and duplicate checking.
+     */
     public boolean add(Driver driver) {
-        // TODO: Implement append and duplicate check
-        return false;
+        // 1. Validate D1, D2, D3 format rules
+        DriverValidator.validateDriver(driver);
+
+        // 2. Prevent duplicate Driver IDs
+        if (retrieve(driver.getDriverID()) != null) {
+            throw new IllegalArgumentException("[D1 FAILED] Duplicate driver ID: " + driver.getDriverID());
+        }
+
+        // Create directory structure if it doesn't exist
+        File file = new File(filePath);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        // 3. Append to file (true parameter means append mode)
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            writer.write(driver.toFileString());
+            writer.newLine();
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to driver file: " + e.getMessage(), e);
+        }
     }
 
+    /**
+     * Retrieves a driver by their ID.
+     */
     public Driver retrieve(String driverID) {
-        // TODO: Implement retrieve by ID
+        if (driverID == null) return null;
+        for (Driver d : retrieveAll()) {
+            if (driverID.equals(d.getDriverID())) {
+                return d;
+            }
+        }
         return null;
     }
+
+    // TODO: Implement the following
 
     public boolean update(Driver updatedDriver) {
         // TODO: Implement update and rewrite operations
