@@ -38,7 +38,7 @@ public class BusValidator {
 
         // [C1] The bus id must be exactly 8 characters long
         boolean isValidLength = false;
-        final int VALIDLENGTH = 8; // valid length size is 8
+        final int VALID_LENGTH = 8; // valid length size is 8
 
         // [C2] The bus id must consist of only digits
         boolean isValidFormat = true;
@@ -47,14 +47,14 @@ public class BusValidator {
         // [C1] VALIDATION
         int idLength = busID.length(); //length of the busID
 
-        if (idLength == VALIDLENGTH) isValidLength = true; // if the idLength matches VALIDLENGTH, it passed
+        if (idLength == VALID_LENGTH) isValidLength = true; // if the idLength matches VALIDLENGTH, it passed
 
         // otherwise, throw an exception
-        else if (idLength < VALIDLENGTH){ 
+        else if (idLength < VALID_LENGTH){ 
             isValidLength = false;
             throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is LESS than the valid length, got " + idLength);
         }   
-        else if (idLength > VALIDLENGTH){
+        else if (idLength > VALID_LENGTH){
             isValidLength = false;
             throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is MORE than the valid length, got " + idLength);
         }
@@ -95,6 +95,9 @@ public class BusValidator {
         if (newCapacity > existingCapacity){
             throw new IllegalArgumentException("[B2 FAILED] Bus capacity cannot increase during update, but can decrease or stay same."
                                                  + " Got current bus capacity of " + existingCapacity + " and new capacity of " + newCapacity);
+
+            //TODO: might need to use this instead if i've miss understood this:
+            //return false;
         }
         else {
             return true; // returns true if exception not thrown
@@ -105,7 +108,38 @@ public class BusValidator {
     public static boolean validateDriverAgeRestriction(Driver driver, Bus bus) {
         // B3: Drivers older than 50 cannot drive buses with capacity >= 50
         // Use DriverValidator.calculateAge() to get driver's age
-        return true;
+
+        // Constant Variables
+        final int AGE_RESTRICTION = 50;
+        final int CAPACITY_RESTRICTION = 50;
+
+        // Driver Variables
+        String birthdate = driver.getBirthdate(); // Birthdate of the driver
+        int driverAge = DriverValidator.calculateAge(birthdate); // Current age of the driver
+
+        // Bus Variables
+        int currCapacity = bus.getCapacity(); // the bus's current capacity
+
+        // if the drivers age is more than the restriction, check the bus's capacity
+        if (driverAge > AGE_RESTRICTION){
+            // if the bus's capacity is more than the restriction, the bus driver cannot drive it
+            if (currCapacity >= CAPACITY_RESTRICTION){
+                throw new IllegalArgumentException("[B3 FAILED] Bus driver is older than " + AGE_RESTRICTION + " and driving a bus "
+                                                    + "with a capacity larger than " + CAPACITY_RESTRICTION + ". Got driver age of "  
+                                                    + driverAge + " and bus capacity of " + currCapacity);
+
+                //TODO: might need to use this instead if i've miss understood this:
+                //return false;
+            }
+            // otherwise the driver is allowed to drive the bus 
+            else {
+                return true;
+            }
+        }
+        // otherwise there are no restrictions on this bus driver, and they are allowed to drive the bus
+        else {
+            return true;
+        }
     }
 
     // TODO: Implement validateElectricBusRestriction() - B4: Experience requirement for electric
