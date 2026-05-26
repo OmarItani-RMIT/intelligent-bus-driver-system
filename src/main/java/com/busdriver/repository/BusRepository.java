@@ -26,6 +26,8 @@ public class BusRepository {
         this.filePath = filePath;
     }
 
+
+
     // TODO: Implement add() - Add a new bus after validation
     public boolean add(Bus bus) {
         // Steps:
@@ -33,7 +35,32 @@ public class BusRepository {
         // 2. Check for duplicate bus ID using retrieve()
         // 3. Append bus.toFileString() to the TXT file
         // Throw IllegalArgumentException if validation fails or duplicate ID
-        return true;
+        if (!(BusValidator.validateBus(bus))){
+            throw new IllegalArgumentException("Bus is invalid and cannot be appended");
+        }
+
+        if (!(retrieve(bus.getBusID()).equals(null))){
+            throw new IllegalArgumentException("Bus has the same busID as an existing bus, and cannot be appended");
+        }
+
+        File file = new File(filePath);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        // 3. Append to file (true parameter means append mode)
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            writer.write(bus.toFileString());
+            writer.newLine();
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to bus file: " + e.getMessage(), e);
+        }
+
+
+        
+    
     }
 
     // TODO: Implement retrieve() - Retrieve a bus by busID
