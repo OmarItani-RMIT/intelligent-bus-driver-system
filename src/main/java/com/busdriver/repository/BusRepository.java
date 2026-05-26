@@ -95,7 +95,29 @@ public class BusRepository {
         // 2. Read each line, parse using Bus.fromFileString()
         // 3. Return list of all Bus objects
         // Return empty list if file doesn't exist
-        return new ArrayList<>();
+
+        // Return variable 
+        ArrayList<Bus> busses = new ArrayList<>();
+
+        //file to read
+        File file = new File(filePath);
+
+        // attempt to make a reader object and use it:
+         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = null; 
+            // while the current read line is not null, create a bus object and append it to the list
+            while ((line = reader.readLine()) != null){
+                Bus appendBus = Bus.fromFileString(line);
+                busses.add(appendBus);
+            }
+
+        } catch (IOException e) {
+            //throw exception if error occurs
+            throw new RuntimeException("Error reading bus file: " + e.getMessage(), e);
+        }
+
+        // return the list of busses
+        return busses;
     }
 
     // TODO: Implement update() - Update an existing bus with validation
