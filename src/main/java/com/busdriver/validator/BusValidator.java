@@ -261,6 +261,13 @@ public class BusValidator {
     // TODO: Implement validateFuelLevel() - helper for fuel level validation
     public static boolean validateFuelLevel(double fuelLevel) {
         // Must be non-negative (>= 0)
-        return true;
+        
+        if (fuelLevel >= 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }
