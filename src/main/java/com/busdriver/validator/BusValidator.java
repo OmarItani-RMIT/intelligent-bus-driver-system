@@ -19,12 +19,9 @@ public class BusValidator {
     public static boolean validateBus(Bus bus) {
         // TODO: Call all individual validation methods
 
+        boolean validation = (validateBusID(bus.getBusID()) && validateCapacity(bus.getCapacity()));
 
-
-        
-
-
-        return true;
+        return validation;
     }
 
     // TODO: Implement validateBusID() - B1: Bus ID format validation
@@ -91,6 +88,10 @@ public class BusValidator {
 
         int existingCapacity = existingBus.getCapacity(); //the existing bus's capacity
 
+        if(!(validateCapacity(existingCapacity))){
+             throw new IllegalArgumentException("[B2 FAILED] Bus capacity is not positive, got current bus capacity of " + existingCapacity);
+        }
+
         // if the new capacity is more than the existing capacity, throw an exceptiom.
         if (newCapacity > existingCapacity){
             throw new IllegalArgumentException("[B2 FAILED] Bus capacity cannot increase during update, but can decrease or stay same."
@@ -119,6 +120,10 @@ public class BusValidator {
 
         // Bus Variables
         int currCapacity = bus.getCapacity(); // the bus's current capacity
+        if(!(validateCapacity(currCapacity))){
+             throw new IllegalArgumentException("[B2 FAILED] Bus capacity is not positive, got current bus capacity of " + currCapacity);
+        }
+
 
         // if the drivers age is more than the restriction, check the bus's capacity
         if (driverAge > AGE_RESTRICTION){
@@ -153,6 +158,11 @@ public class BusValidator {
 
         // Bus variables
         String currFuelType = bus.getFuelType(); // the current bus's fuel type
+
+        if(!(validateFuelType(currFuelType))){
+             throw new IllegalArgumentException("[B2 FAILED] Bus fueltype is not a valid fueltype, must be one of: " + 
+                                                    "Diesel, Hybrid, Electricity , got current bus capacity of " + currFuelType);
+        }
 
         // Driver variables
         int currYearsExperience = driver.getExperienceYears(); // the current drivers experience in number of years
@@ -199,6 +209,11 @@ public class BusValidator {
 
         // Bus Variables
         String currFuelType = bus.getFuelType();
+        
+         if(!(validateFuelType(currFuelType))){
+             throw new IllegalArgumentException("[B2 FAILED] Bus fueltype is not a valid fueltype, must be one of: " + 
+                                                    "Diesel, Hybrid, Electricity , got current bus capacity of " + currFuelType);
+        }
 
 
         // if driver doesnt have a heavy liscence or public transport liscence, check the bus's fuel type
@@ -261,7 +276,7 @@ public class BusValidator {
     // TODO: Implement validateFuelLevel() - helper for fuel level validation
     public static boolean validateFuelLevel(double fuelLevel) {
         // Must be non-negative (>= 0)
-        
+
         if (fuelLevel >= 0){
             return true;
         }
