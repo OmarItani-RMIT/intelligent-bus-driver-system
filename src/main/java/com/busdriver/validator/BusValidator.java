@@ -227,7 +227,20 @@ public class BusValidator {
     // TODO: Implement validateFuelType() - helper for fuel type validation
     public static boolean validateFuelType(String fuelType) {
         // Must be one of: Diesel, Hybrid, Electricity
-        return true;
+
+        // Array containing all possible fuel types
+        String[] fuelTypes = {"Diesel", "Hybrid", "Electricity"};
+
+        // for each possible fuel type, check if the parameter matches it, return true
+        for (String type : fuelTypes){
+            if (fuelType.equals(type)){
+                return true;
+            }
+
+        }
+
+        // Getting here means we did not match the parameter to a possible fuel type, so we return false
+        return false;
     }
 
     // TODO: Implement validateCapacity() - helper for capacity validation
