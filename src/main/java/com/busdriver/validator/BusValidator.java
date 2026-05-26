@@ -110,7 +110,7 @@ public class BusValidator {
         // Use DriverValidator.calculateAge() to get driver's age
 
         // Constant Variables
-        final int AGE_RESTRICTION = 50;
+        final int AGE_RESTRICTION = 50; 
         final int CAPACITY_RESTRICTION = 50;
 
         // Driver Variables
@@ -146,7 +146,38 @@ public class BusValidator {
     public static boolean validateElectricBusRestriction(Driver driver, Bus bus) {
         // B4: Only drivers with >= 5 years experience can drive electric buses
         // This only applies when fuelType = "Electricity"
-        return true;
+
+        // Constant variables
+        final String RESTRICTED_FUEL_TYPE = "Electricity"; 
+        final int RESTRICTED_YEARS_EXPERIENCE = 5;
+
+        // Bus variables
+        String currFuelType = bus.getFuelType(); // the current bus's fuel type
+
+        // Driver variables
+        int currYearsExperience = driver.getExperienceYears(); // the current drivers experience in number of years
+
+        // if the fuel type of the bus is restricted, check the drivers years of experience
+        if (currFuelType.equals(RESTRICTED_FUEL_TYPE)){
+            // if the drivers years of experience is less than the mandated ammount, throw exception
+            if (currYearsExperience < RESTRICTED_YEARS_EXPERIENCE){
+                throw new IllegalArgumentException("[B4 FAILED] Bus driver has less years of experience than " + RESTRICTED_YEARS_EXPERIENCE
+                                                 + " and is attempting to drive a bus of fuel type " + RESTRICTED_FUEL_TYPE 
+                                                 + ". Got " + currYearsExperience + " years of experience.");
+
+                //TODO: might need to use this instead if i've miss understood this:
+                //return false;
+            }
+            // otherwise the driver has experience more than or equal to the mandated ammount, and can drive the bus.
+            else {
+                return true;
+            }
+        }   
+        // otherwise, the driver can drive the bus.
+        else{
+            return true;
+        }
+        
     }
 
     // TODO: Implement validateDriverLicenceRestriction() - B5: License requirement for electric/hybrid
