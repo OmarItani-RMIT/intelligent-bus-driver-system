@@ -88,7 +88,17 @@ public class BusValidator {
     // TODO: Implement validateCapacityUpdate() - B2: Capacity update restriction
     public static boolean validateCapacityUpdate(Bus existingBus, int newCapacity) {
         // B2: Capacity cannot increase during update, but can decrease or stay same
-        return true;
+
+        int existingCapacity = existingBus.getCapacity(); //the existing bus's capacity
+
+        // if the new capacity is more than the existing capacity, throw an exceptiom.
+        if (newCapacity > existingCapacity){
+            throw new IllegalArgumentException("[B2 FAILED] Bus capacity cannot increase during update, but can decrease or stay same."
+                                                 + " Got current bus capacity of " + existingCapacity + " and new capacity of " + newCapacity);
+        }
+        else {
+            return true; // returns true if exception not thrown
+        }
     }
 
     // TODO: Implement validateDriverAgeRestriction() - B3: Driver age vs bus capacity
