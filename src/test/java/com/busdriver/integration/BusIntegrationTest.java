@@ -94,8 +94,14 @@ public class BusIntegrationTest {
     @DisplayName("IT-B3: Bus updates are persisted correctly in TXT file")
     void testUpdatesPersistedCorrectly() {
         // 1. Add a valid bus
+        Bus originalBus = new Bus("12345678", 50, 90.0, "Diesel");
+        repository.add(originalBus);
         // 2. Create updated bus (same ID, decreased capacity)
+        Bus updatedBus = new Bus("12345678", 45, 65.0, "Diesel");
+        assertTrue(repository.update(updatedBus));
         // 3. Call repository.update(updatedBus)
+        Bus retrieved = repository.retrieve("12345678");
+        assertNotNull(retrieved);
         // 4. Retrieve and assert updated fields
         // 5. Try increasing capacity -> assertThrows (B2)
     }
@@ -105,7 +111,9 @@ public class BusIntegrationTest {
     @DisplayName("IT-B4: Bus count is updated correctly after operations")
     void testCountUpdatedCorrectly() {
         // 1. Assert count == 0
+        
         // 2. Add bus1, assert count == 1
+    
         // 3. Add bus2, assert count == 2
         // 4. Add bus3, assert count == 3
         // 5. Try adding duplicate ID -> assertThrows, count stays 3
