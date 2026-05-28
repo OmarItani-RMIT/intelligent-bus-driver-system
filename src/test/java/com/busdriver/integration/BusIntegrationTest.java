@@ -103,7 +103,16 @@ public class BusIntegrationTest {
         Bus retrieved = repository.retrieve("12345678");
         assertNotNull(retrieved);
         // 4. Retrieve and assert updated fields
-        // 5. Try increasing capacity -> assertThrows (B2)
+        assertEquals("12345678", retrieved.getBusID());
+        assertEquals(45, retrieved.getCapacity());
+        
+        assertEquals(65.0, retrieved.getFuelLevel());
+        assertEquals("Diesel", retrieved.getFuelType());
+        Bus invalidCapacityIncrease = new Bus("12345678", 60, 65.0, "Diesel");
+        assertThrows(IllegalArgumentException.class, () ->
+            repository.update(invalidCapacityIncrease)
+        );
+    
     }
 
     // TODO: IT-B4 - Bus count is updated correctly
