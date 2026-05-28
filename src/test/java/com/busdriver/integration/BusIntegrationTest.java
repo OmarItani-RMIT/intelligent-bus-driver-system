@@ -27,15 +27,26 @@ public class BusIntegrationTest {
     @BeforeEach
     void setUp() {
         // TODO: Create data directory if needed
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
         // TODO: Initialize repository and clear test data
+        repository = new BusRepository(TEST_FILE_PATH);
+        repository.clear();
     }
 
     @AfterEach
     void tearDown() {
         // TODO: Clean up test file
+        File testFile = new File(TEST_FILE_PATH);
+        if (testFile.exists()) {
+            testFile.delete();
+        }   
     }
 
     // TODO: IT-B1 - Valid buses are stored correctly in TXT file
+    
     @Test
     @DisplayName("IT-B1: Valid buses are stored correctly in TXT file")
     void testValidBusStoredCorrectly() {
