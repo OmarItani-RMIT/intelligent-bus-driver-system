@@ -51,9 +51,19 @@ public class BusIntegrationTest {
     @DisplayName("IT-B1: Valid buses are stored correctly in TXT file")
     void testValidBusStoredCorrectly() {
         // 1. Create a valid Bus
+        Bus bus = new Bus("12345678", 40, 75.5, "Diesel");
+        
         // 2. Call repository.add(bus)
+        assertTrue(repository.add(bus));
+
         // 3. Call repository.retrieve(busID)
+        Bus retrieved = repository.retrieve("12345678");
         // 4. Assert all fields match
+        assertNotNull(retrieved);
+        assertEquals("12345678", retrieved.getBusID());
+        assertEquals(40, retrieved.getCapacity());
+        assertEquals(75.5, retrieved.getFuelLevel());
+        assertEquals("Diesel", retrieved.getFuelType());
     }
 
     // TODO: IT-B2 - Invalid buses are rejected and not stored
