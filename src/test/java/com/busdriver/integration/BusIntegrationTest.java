@@ -71,9 +71,22 @@ public class BusIntegrationTest {
     @DisplayName("IT-B2: Invalid buses are rejected and not stored")
     void testInvalidBusesRejected() {
         // 1. Try adding bus with invalid ID (letters) -> assertThrows
+        assertThrows(IllegalArgumentException.class, () ->
+            new Bus("12AB5678", 40, 60.0, "Diesel")
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+            new Bus("1234567", 40, 60.0, "Diesel")
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+            new Bus("87654321", 0, 60.0, "Diesel")
+        );
+
+        assertEquals(0, repository.count());
+    
         // 2. Try adding bus with invalid fuel type -> assertThrows
-        // 3. Try adding bus with wrong length ID -> assertThrows
-        // 4. Assert count == 0
+        // 3. 
     }
 
     // TODO: IT-B3 - Bus updates are persisted correctly
