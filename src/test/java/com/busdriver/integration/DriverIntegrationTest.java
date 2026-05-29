@@ -1,6 +1,7 @@
 package com.busdriver.integration;
 
 import com.busdriver.Driver;
+import com.busdriver.repository.BusRepository;
 import com.busdriver.repository.DriverRepository;
 import org.junit.jupiter.api.*;
 
@@ -27,12 +28,22 @@ public class DriverIntegrationTest {
     @BeforeEach
     void setUp() {
         // TODO: Create data directory if needed
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
         // TODO: Initialize repository and clear test data
+        repository = new BusRepository(TEST_FILE_PATH);
+        repository.clear();
     }
 
     @AfterEach
     void tearDown() {
         // TODO: Clean up test file
+        File testFile = new File(TEST_FILE_PATH);
+        if (testFile.exists()) {
+            testFile.delete();
+        }
     }
 
     // TODO: IT-D1 - Valid drivers are stored correctly in TXT file
