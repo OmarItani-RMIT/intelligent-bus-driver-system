@@ -33,7 +33,7 @@ public class DriverIntegrationTest {
             dataDir.mkdirs();
         }
         // TODO: Initialize repository and clear test data
-        repository = new BusRepository(TEST_FILE_PATH);
+        repository = new DriverRepository(TEST_FILE_PATH);
         repository.clear();
     }
 
