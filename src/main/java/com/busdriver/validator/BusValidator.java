@@ -15,274 +15,187 @@ import com.busdriver.Driver;
  */
 public class BusValidator {
 
-    // TODO: Implement validateBus() - validates entire Bus object against B1
+    /**
+     * Validates the entire Bus object against B1 rules.
+     */
     public static boolean validateBus(Bus bus) {
-        // TODO: Call all individual validation methods
-
-        boolean validation = (validateBusID(bus.getBusID()) && validateCapacity(bus.getCapacity()));
-
-        return validation;
+        return validateBusID(bus.getBusID()) && validateCapacity(bus.getCapacity());
     }
 
-    // TODO: Implement validateBusID() - B1: Bus ID format validation
+    /**
+     * B1: Bus ID format validation.
+     * Must be exactly 8 characters long and consist of only digits (0-9).
+     */
     public static boolean validateBusID(String busID) {
-        // B1 Rules:
-        // - Must be exactly 8 characters long
-        // - All characters must be digits (0-9)
-        // Throw IllegalArgumentException with descriptive message if invalid
-
-        
-
-        // [C1] The bus id must be exactly 8 characters long
         boolean isValidLength = false;
-        final int VALID_LENGTH = 8; // valid length size is 8
-
-        // [C2] The bus id must consist of only digits
+        final int VALID_LENGTH = 8;
         boolean isValidFormat = true;
 
+        int idLength = busID.length();
 
-        // [C1] VALIDATION
-        int idLength = busID.length(); //length of the busID
-
-        if (idLength == VALID_LENGTH) isValidLength = true; // if the idLength matches VALIDLENGTH, it passed
-
-        // otherwise, throw an exception
-        else if (idLength < VALID_LENGTH){ 
-            isValidLength = false;
+        if (idLength == VALID_LENGTH) {
+            isValidLength = true;
+        } else if (idLength < VALID_LENGTH) { 
             throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is LESS than the valid length, got " + idLength);
-        }   
-        else if (idLength > VALID_LENGTH){
-            isValidLength = false;
+        } else {
             throw new IllegalArgumentException("[B1 C1 FAILED] Length of ID is MORE than the valid length, got " + idLength);
         }
 
-        // [C2] VALIDATION
-        char[] busIDArray = busID.toCharArray(); // Bus ID converted to an array of characters, for easy looping
+        char[] busIDArray = busID.toCharArray();
         int busArrayLength = busIDArray.length;
 
-        // For each index from 0 to the length of the busIDArray (array of characters), check if the character at that
-        // index is not a digit, and if it isnt set the isValidFormat bool to false and throw and exception. 
-        for (int index = 0; index < busArrayLength; index++){
+        for (int index = 0; index < busArrayLength; index++) {
             if (!(Character.isDigit(busIDArray[index]))) { 
                 isValidFormat = false; 
                 throw new IllegalArgumentException("[B1 C2 FAILED] Character at position {" + index + "} is not a digit, got " + busIDArray[index]);
             }
         }
 
-
-        if ((isValidLength) && (isValidFormat)){
+        if (isValidLength && isValidFormat) {
             return true;
-        }
-        else if (!(isValidLength)){
-            throw new IllegalArgumentException("[B1 C1 FAILED]"); // Should be unreachable but still throws descriptive exception 
-        }
-        else { //stops error must return a boolean (also implicitly only fires if (!(isValidFormat)) )
-            throw new IllegalArgumentException("[B1 C2 FAILED]"); // Should be unreachable but still throws descriptive exception 
+        } else if (!isValidLength) {
+            throw new IllegalArgumentException("[B1 C1 FAILED]"); 
+        } else { 
+            throw new IllegalArgumentException("[B1 C2 FAILED]"); 
         }   
-
     }
 
-    // TODO: Implement validateCapacityUpdate() - B2: Capacity update restriction
+    /**
+     * B2: Capacity update restriction.
+     * Capacity cannot increase during update, but can decrease or stay same.
+     */
     public static boolean validateCapacityUpdate(Bus existingBus, int newCapacity) {
-        // B2: Capacity cannot increase during update, but can decrease or stay same
+        int existingCapacity = existingBus.getCapacity();
 
-        int existingCapacity = existingBus.getCapacity(); //the existing bus's capacity
-
-        if(!(validateCapacity(existingCapacity))){
+        if (!(validateCapacity(existingCapacity))) {
              throw new IllegalArgumentException("[B2 FAILED] Bus capacity is not positive, got current bus capacity of " + existingCapacity);
         }
 
-        // if the new capacity is more than the existing capacity, throw an exceptiom.
-        if (newCapacity > existingCapacity){
+        if (newCapacity > existingCapacity) {
             throw new IllegalArgumentException("[B2 FAILED] Bus capacity cannot increase during update, but can decrease or stay same."
                                                  + " Got current bus capacity of " + existingCapacity + " and new capacity of " + newCapacity);
-
-            //TODO: might need to use this instead if i've miss understood this:
-            //return false;
-        }
-        else {
-            return true; // returns true if exception not thrown
+        } else {
+            return true; 
         }
     }
 
-    // TODO: Implement validateDriverAgeRestriction() - B3: Driver age vs bus capacity
+    /**
+     * B3: Driver age vs bus capacity.
+     * Drivers older than 50 cannot drive buses with capacity >= 50.
+     */
     public static boolean validateDriverAgeRestriction(Driver driver, Bus bus) {
-        // B3: Drivers older than 50 cannot drive buses with capacity >= 50
-        // Use DriverValidator.calculateAge() to get driver's age
-
-        // Constant Variables
         final int AGE_RESTRICTION = 50; 
         final int CAPACITY_RESTRICTION = 50;
 
-        // Driver Variables
-        String birthdate = driver.getBirthdate(); // Birthdate of the driver
-        int driverAge = DriverValidator.calculateAge(birthdate); // Current age of the driver
+        String birthdate = driver.getBirthdate();
+        int driverAge = DriverValidator.calculateAge(birthdate);
 
-        // Bus Variables
-        int currCapacity = bus.getCapacity(); // the bus's current capacity
-        if(!(validateCapacity(currCapacity))){
+        int currCapacity = bus.getCapacity();
+        if (!(validateCapacity(currCapacity))) {
              throw new IllegalArgumentException("[B2 FAILED] Bus capacity is not positive, got current bus capacity of " + currCapacity);
         }
 
-
-        // if the drivers age is more than the restriction, check the bus's capacity
-        if (driverAge > AGE_RESTRICTION){
-            // if the bus's capacity is more than the restriction, the bus driver cannot drive it
-            if (currCapacity >= CAPACITY_RESTRICTION){
+        if (driverAge > AGE_RESTRICTION) {
+            if (currCapacity >= CAPACITY_RESTRICTION) {
                 throw new IllegalArgumentException("[B3 FAILED] Bus driver is older than " + AGE_RESTRICTION + " and driving a bus "
                                                     + "with a capacity larger than " + CAPACITY_RESTRICTION + ". Got driver age of "  
                                                     + driverAge + " and bus capacity of " + currCapacity);
-
-                //TODO: might need to use this instead if i've miss understood this:
-                //return false;
-            }
-            // otherwise the driver is allowed to drive the bus 
-            else {
+            } else {
                 return true;
             }
-        }
-        // otherwise there are no restrictions on this bus driver, and they are allowed to drive the bus
-        else {
+        } else {
             return true;
         }
     }
 
-    // TODO: Implement validateElectricBusRestriction() - B4: Experience requirement for electric
+    /**
+     * B4: Experience requirement for electric buses.
+     * Only drivers with >= 5 years experience can drive electric buses.
+     */
     public static boolean validateElectricBusRestriction(Driver driver, Bus bus) {
-        // B4: Only drivers with >= 5 years experience can drive electric buses
-        // This only applies when fuelType = "Electricity"
-
-        // Constant variables
         final String RESTRICTED_FUEL_TYPE = "Electricity"; 
         final int RESTRICTED_YEARS_EXPERIENCE = 5;
 
-        // Bus variables
-        String currFuelType = bus.getFuelType(); // the current bus's fuel type
+        String currFuelType = bus.getFuelType();
 
-        if(!(validateFuelType(currFuelType))){
+        if (!(validateFuelType(currFuelType))) {
              throw new IllegalArgumentException("[B2 FAILED] Bus fueltype is not a valid fueltype, must be one of: " + 
-                                                    "Diesel, Hybrid, Electricity , got current bus capacity of " + currFuelType);
+                                                    "Diesel, Hybrid, Electricity, got current bus capacity of " + currFuelType);
         }
 
-        // Driver variables
-        int currYearsExperience = driver.getExperienceYears(); // the current drivers experience in number of years
+        int currYearsExperience = driver.getExperienceYears();
 
-        // if the fuel type of the bus is restricted, check the drivers years of experience
-        if (currFuelType.equals(RESTRICTED_FUEL_TYPE)){
-            // if the drivers years of experience is less than the mandated ammount, throw exception
-            if (currYearsExperience < RESTRICTED_YEARS_EXPERIENCE){
+        if (currFuelType.equals(RESTRICTED_FUEL_TYPE)) {
+            if (currYearsExperience < RESTRICTED_YEARS_EXPERIENCE) {
                 throw new IllegalArgumentException("[B4 FAILED] Bus driver has less years of experience than " + RESTRICTED_YEARS_EXPERIENCE
                                                  + " and is attempting to drive a bus of fuel type " + RESTRICTED_FUEL_TYPE 
                                                  + ". Got " + currYearsExperience + " years of experience.");
-
-                //TODO: might need to use this instead if i've miss understood this:
-                //return false;
-            }
-            // otherwise the driver has experience more than or equal to the mandated ammount, and can drive the bus.
-            else {
+            } else {
                 return true;
             }
-        }   
-        // otherwise, the driver can drive the bus.
-        else{
+        } else {
             return true;
         }
-        
     }
 
-    // TODO: Implement validateDriverLicenceRestriction() - B5: License requirement for electric/hybrid
+    /**
+     * B5: License requirement for electric/hybrid.
+     * Only Heavy or PublicTransport license holders can drive electric (Electricity) or hybrid (Hybrid) buses.
+     */
     public static boolean validateDriverLicenceRestriction(Driver driver, Bus bus) {
-        // B5: Only Heavy or PublicTransport license holders can drive
-        //     electric (Electricity) or hybrid (Hybrid) buses
-
-        // Constant bus variables
         final String ELECTRIC_CLASSIFIER = "Electricity";
         final String HYBRID_CLASSIFIER = "Hybrid";
-
-        // Constant driver variables
         final String HEAVY_LISCENCE_CLASSIFIER = "Heavy";
         final String PUBLICTRANSPORT_LISCENCE_CLASSIFIER = "PublicTransport";
 
-
-        // Driver variables
         String currLiscence = driver.getLicenseType();
-
-        // Bus Variables
         String currFuelType = bus.getFuelType();
         
-         if(!(validateFuelType(currFuelType))){
+        if (!(validateFuelType(currFuelType))) {
              throw new IllegalArgumentException("[B2 FAILED] Bus fueltype is not a valid fueltype, must be one of: " + 
-                                                    "Diesel, Hybrid, Electricity , got current bus capacity of " + currFuelType);
+                                                    "Diesel, Hybrid, Electricity, got current bus capacity of " + currFuelType);
         }
 
-
-        // if driver doesnt have a heavy liscence or public transport liscence, check the bus's fuel type
-        if (!((currLiscence.equals(HEAVY_LISCENCE_CLASSIFIER)) || (currLiscence.equals(PUBLICTRANSPORT_LISCENCE_CLASSIFIER)))){
-            // if the bus's fuel type matches either of the classifiers, they cannot drive the bus
-            if ((currFuelType == ELECTRIC_CLASSIFIER) || (currFuelType == HYBRID_CLASSIFIER)){
+        if (!((currLiscence.equals(HEAVY_LISCENCE_CLASSIFIER)) || (currLiscence.equals(PUBLICTRANSPORT_LISCENCE_CLASSIFIER)))) {
+            // Fix: Replaced string comparison '==' operator with .equals()
+            if (currFuelType.equals(ELECTRIC_CLASSIFIER) || currFuelType.equals(HYBRID_CLASSIFIER)) {
                 throw new IllegalArgumentException("[B5 FAILED] Bus driver of type " + currLiscence + " cannot drive a bus of type " + currFuelType);
-                
-                //TODO: might need to use this instead if i've miss understood this:
-                //return false;
-            }
-            // otherwise, they can drive the bus
-            else{
+            } else {
                 return true;
             }    
-        }
-        // otherwise, the bus driver doesnt have any restrictions
-        else {
+        } else {
             return true;
         }
-
-
-        
     }
 
-    // TODO: Implement validateFuelType() - helper for fuel type validation
+    /**
+     * Helper for fuel type validation.
+     * Must be one of: Diesel, Hybrid, Electricity.
+     */
     public static boolean validateFuelType(String fuelType) {
-        // Must be one of: Diesel, Hybrid, Electricity
-
-        // Array containing all possible fuel types
         String[] fuelTypes = {"Diesel", "Hybrid", "Electricity"};
 
-        // for each possible fuel type, check if the parameter matches it, return true
-        for (String type : fuelTypes){
-            if (fuelType.equals(type)){
+        for (String type : fuelTypes) {
+            if (fuelType.equals(type)) {
                 return true;
             }
-
         }
-
-        // Getting here means we did not match the parameter to a possible fuel type, so we return false
         return false;
     }
 
-    // TODO: Implement validateCapacity() - helper for capacity validation
+    /**
+     * Helper for capacity validation.
+     * Must be positive (> 0).
+     */
     public static boolean validateCapacity(int capacity) {
-        // Must be positive (> 0)
-
-        // if the capacity is above 0, return true
-        if (capacity > 0){
-            return true;
-        }
-        // otherwise return false.
-        else {
-            return false;
-        }
-        
+        return capacity > 0;
     }
 
-    // TODO: Implement validateFuelLevel() - helper for fuel level validation
+    /**
+     * Helper for fuel level validation.
+     * Must be non-negative (>= 0).
+     */
     public static boolean validateFuelLevel(double fuelLevel) {
-        // Must be non-negative (>= 0)
-
-        if (fuelLevel >= 0){
-            return true;
-        }
-        else {
-            return false;
-        }
-
+        return fuelLevel >= 0;
     }
 }
