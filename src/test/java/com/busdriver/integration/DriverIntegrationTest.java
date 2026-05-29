@@ -50,9 +50,26 @@ public class DriverIntegrationTest {
     @DisplayName("IT-D1: Valid drivers are stored correctly in TXT file")
     void testValidDriverStoredCorrectly() {
         // 1. Create a valid Driver
+        Driver driver = new Driver(
+            "23@@5678AB",
+            "John Smith",
+            5,
+            "Light",
+            "12|King Street|Melbourne|VIC|Australia",
+            "01-01-2000"
+        );
         // 2. Call repository.add(driver)
+        assertTrue(repository.add(driver));
         // 3. Call repository.retrieve(driverID)
+        Driver retrieved = repository.retrieve("23@@5678AB");
         // 4. Assert all fields match
+        assertNotNull(retrieved);
+        assertEquals("23@@5678AB", retrieved.getDriverID());
+        assertEquals("John Smith", retrieved.getName());
+        assertEquals(5, retrieved.getExperienceYears());
+        assertEquals("Light", retrieved.getLicenseType());
+        assertEquals("12|King Street|Melbourne|VIC|Australia", retrieved.getAddress());
+        assertEquals("01-01-2000", retrieved.getBirthdate());
     }
 
     // TODO: IT-D2 - Invalid drivers are rejected and not stored
@@ -60,9 +77,40 @@ public class DriverIntegrationTest {
     @DisplayName("IT-D2: Invalid drivers are rejected and not stored")
     void testInvalidDriversRejected() {
         // 1. Try adding driver with invalid ID -> assertThrows
+        assertThrows(IllegalArgumentException.class, () ->
+            new Driver(
+                    "1A@5678AB",
+                    "John Smith",
+                    5,
+                    "Light",
+                    "12|King Street|Melbourne|VIC|Australia",
+                    "01-01-2000"
+            )
+        );
         // 2. Try adding driver with invalid address -> assertThrows
+        assertThrows(IllegalArgumentException.class, () ->
+            new Driver(
+                    "23@@5678AB",
+                    "John Smith",
+                    5,
+                    "Light",
+                    "12|King Street|Melbourne|VIC",
+                    "01-01-2000"
+            )
+        );
         // 3. Try adding driver with invalid birthdate -> assertThrows
+        assertThrows(IllegalArgumentException.class, () ->
+            new Driver(
+                    "24##6789CD",
+                    "Alice Brown",
+                    3,
+                    "Medium",
+                    "25|Queen Street|Melbourne|VIC|Australia",
+                    "2000/01/01"
+            )
+        );
         // 4. Assert count == 0
+        assertEquals(0, repository.count());
     }
 
     // TODO: IT-D3 - Driver updates are persisted correctly
@@ -70,9 +118,56 @@ public class DriverIntegrationTest {
     @DisplayName("IT-D3: Driver updates are persisted correctly in TXT file")
     void testUpdatesPersistedCorrectly() {
         // 1. Add a valid driver
+        Driver originalDriver = new Driver(
+            "23@@5678AB",
+            "John Smith",
+            5,
+            "Light",
+            "12|King Street|Melbourne|VIC|Australia",
+            "01-01-2000"
+        );
+        repository.add(originalDriver);
         // 2. Create updated driver (same ID, different fields)
+        Driver updatedDriver = new Driver(
+            "23@@5678AB",
+            "John Smith",
+            6,
+            "Medium",
+            "99|Lonsdale Street|Melbourne|VIC|Australia",
+            "01-01-2000"
+        );
+
+        assertTrue(repository.update(updatedDriver));
         // 3. Call repository.update(updatedDriver)
+        Driver retrieved = repository.retrieve("23@@5678AB");
+        assertNotNull(retrieved);
+        assertEquals(6, retrieved.getExperienceYears());
+        assertEquals("Medium", retrieved.getLicenseType());
+        assertEquals("99|Lonsdale Street|Melbourne|VIC|Australia", retrieved.getAddress());
+
         // 4. Retrieve and assert updated fields
+        Driver experiencedDriver = new Driver(
+            "24##6789CD",
+            "Alice Brown",
+            11,
+            "Light",
+            "25|Queen Street|Melbourne|VIC|Australia",
+            "02-02-2000"
+        );
+        repository.add(experiencedDriver);
+
+        Driver invalidLicenseChange = new Driver(
+            "24##6789CD",
+            "Alice Brown",
+            11,
+            "Heavy",
+            "25|Queen Street|Melbourne|VIC|Australia",
+            "02-02-2000"
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+            repository.update(invalidLicenseChange)
+        );
     }
 
     // TODO: IT-D4 - Driver count is updated correctly
