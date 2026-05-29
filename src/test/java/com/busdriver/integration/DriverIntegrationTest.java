@@ -1,7 +1,6 @@
 package com.busdriver.integration;
 
 import com.busdriver.Driver;
-import com.busdriver.repository.BusRepository;
 import com.busdriver.repository.DriverRepository;
 import org.junit.jupiter.api.*;
 
@@ -33,7 +32,7 @@ public class DriverIntegrationTest {
             dataDir.mkdirs();
         }
         // TODO: Initialize repository and clear test data
-        repository = new BusRepository(TEST_FILE_PATH);
+        repository = new DriverRepository(TEST_FILE_PATH);
         repository.clear();
     }
 
