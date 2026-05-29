@@ -105,7 +105,7 @@ public class BusIntegrationTest {
         // 4. Retrieve and assert updated fields
         assertEquals("12345678", retrieved.getBusID());
         assertEquals(45, retrieved.getCapacity());
-        
+
         assertEquals(65.0, retrieved.getFuelLevel());
         assertEquals("Diesel", retrieved.getFuelType());
         Bus invalidCapacityIncrease = new Bus("12345678", 60, 65.0, "Diesel");
@@ -120,11 +120,21 @@ public class BusIntegrationTest {
     @DisplayName("IT-B4: Bus count is updated correctly after operations")
     void testCountUpdatedCorrectly() {
         // 1. Assert count == 0
-        
+        assertEquals(0, repository.count());
         // 2. Add bus1, assert count == 1
-    
+        Bus bus1 = new Bus("11111111", 30, 50.0, "Diesel");
+        Bus bus2 = new Bus("22222222", 40, 60.0, "Hybrid");
+        Bus bus3 = new Bus("33333333", 45, 70.0, "Electricity");
+        repository.add(bus1);
+        assertEquals(1, repository.count());
         // 3. Add bus2, assert count == 2
+        repository.add(bus2);
+        assertEquals(2, repository.count());
         // 4. Add bus3, assert count == 3
+        repository.add(bus3);
+        assertEquals(3, repository.count());
+        
         // 5. Try adding duplicate ID -> assertThrows, count stays 3
+
     }
 }
