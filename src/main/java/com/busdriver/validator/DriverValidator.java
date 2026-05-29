@@ -1,12 +1,7 @@
 package com.busdriver.validator;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-
 import com.busdriver.Driver;
-
-
 import java.time.Period;
 
 /**
@@ -22,53 +17,28 @@ import java.time.Period;
  */
 public class DriverValidator {
 
-
     /**
      * Helper method for validating the parameters of the constructor
      * @return returns true if all of the rules are met
      */
     public static boolean validateDriver(Driver driver) {
-        
         if(validateDriverID(driver.getDriverID()) && (validateAddress(driver.getAddress())) &&
                            validateBirthdate(driver.getBirthdate())){
             return true;
         }
-
-
         return false;
     }
 
     /**
      * Helper method for validating the driver ID
-     * @param driverID ID of the driver must be exactly 10 chars, first 2 digits 2-9, at least 2 special chars in positions 3-8, last 2 uppercase letters (A-Z)
-     * @return returns true if the rule is met
      */
     public static boolean validateDriverID(String driverID) {
-        // D1 Rules:
-        // - Must be exactly 10 characters long
-        // - First two characters must be digits between 2 and 9
-        // - Characters 3 to 8 must contain at least two special characters
-        // - Last two characters must be uppercase letters (A-Z)
-        // Throw IllegalArgumentException with descriptive message if invalid
-
-        //checks the driver id based on the following clauses:
-    
-        /** [C1] Clause One: Id must be exactly 10 chars */
         boolean isValLength = false;
-
-        /** [C2] Clause Two: first 2 digits must be 2-9 */
         boolean isFirstDigits = false;
-
-        /** [C3] Clause Three: at least 2 special chars in positions 3-8 */
         boolean isSpecialChar = false;
-
-        /** [C4] Clause Four: last 2 characters must be uppercase letters (A-Z) */
         boolean isLastUppercase = false;
 
-        // if any fail, we return false early to save runtime.
-
         // --Check C1------------------------------------------------------------------------------------------------------
-        //ensure the length is exactly 10, if so the clause is passed
         if((driverID.length() == 10)){
             isValLength = true;
         }
@@ -78,25 +48,19 @@ public class DriverValidator {
         }
 
         // --Check C2------------------------------------------------------------------------------------------------------
-        
-        // variables for the first character
         boolean firstCharVal = false;
         char firstChar = driverID.charAt(0);
 
-        // variables for the second character
         boolean secondCharVal = false;
         char secondChar = driverID.charAt(1);
 
-        // the valid digits 2 through 9
         char[] validDigits = {'2', '3', '4', '5', '6', '7', '8', '9'};
 
-        // for each digit in the valid digits array, check if the first or second character matches them
         for (char digit : validDigits){
             if (firstChar == digit) firstCharVal = true;
             if (secondChar == digit) secondCharVal = true;
         }
 
-        //check to ensure both characters were found to match. If so, the clause is passed
         if (firstCharVal && secondCharVal){ 
             isFirstDigits = true; 
         }
@@ -109,25 +73,16 @@ public class DriverValidator {
                                             + secondChar);
         }
 
-
         // --Check C3------------------------------------------------------------------------------------------------------
-        
-        //counter variable
         int specialCount = 0;
 
-        //for every character from the third position (index 2) to the end of the id:
         for (int index = 2; index < driverID.length(); index++){
-
-            // check if the character is not an integer, letter, or whitespace (implying it is a special character)
             if( !(Character.isDigit(driverID.charAt(index))) && !(Character.isAlphabetic(driverID.charAt(index)))
                  && !(Character.isWhitespace(driverID.charAt(index)))){
-
-                    //increment counter
                     specialCount++;
             }
         }
         
-        //if there are 2 or more special characters found, clause satisfied
         if(specialCount >= 2){ 
             isSpecialChar = true;
         }
@@ -139,31 +94,22 @@ public class DriverValidator {
         }
 
         // --Check C4------------------------------------------------------------------------------------------------------
-
-        // variable for the id's length
         int idLength = driverID.length();
 
-        // variables for the last character
         boolean lastCharVal = false;
         char lastChar = driverID.charAt(idLength - 1);
 
-        // variables for the second last character
         boolean secLastCharVal = false;
         char secondLastChar = driverID.charAt(idLength - 2);
 
-        // check if the last character is alphabetic
         if(Character.isAlphabetic(lastChar)){
-            //check if the last character is uppercase
             if(Character.isUpperCase(lastChar)) lastCharVal = true;
         }
 
-        // check if the second to last character is alphabetic
         if(Character.isAlphabetic(secondLastChar)){
-            // check if the second to last character is uppercase
             if(Character.isUpperCase(secondLastChar)) secLastCharVal = true;
         }
 
-        // if both pass, the clause is satisfied
         if(lastCharVal && secLastCharVal){ 
             isLastUppercase = true; 
         }
@@ -171,45 +117,25 @@ public class DriverValidator {
             throw new IllegalArgumentException("[D1, C4 FAILED] LAST character in ID is not an uppercase letter, got " + lastChar);
         }
         else if (!(secLastCharVal)){
-            throw new IllegalArgumentException("[D1, C4 FAILED] SECOND LAST character in ID is not an uppercase letter, got" + secondChar);
+            throw new IllegalArgumentException("[D1, C4 FAILED] SECOND LAST character in ID is not an uppercase letter, got" + secondLastChar);
         }
 
-
-        // If we get here it is implied that the statement below is always true, but
-        // we check it anyways: Return the result of all clauses
         return (isValLength && isFirstDigits && isSpecialChar && isLastUppercase);
-
     }
 
-     /**
+    /**
      * helper method for validating the bus drivers address
-     * @param address current address where the driver lives: must follow format: Street Number|Street Name|City|State|Country
-     * @return returns true if the rule is met
      */
     public static boolean validateAddress(String address) {
-        // D2 Rules:
-        // - Must follow format: Street Number|Street Name|City|State|Country
-        // - Must have exactly 5 parts separated by |
-        // - Each part must be non-empty
-
-        // checks the validity of the address by checking that if we use .split using the regex character '|', we get 5
-        // segments. Returns true if so.
-
-        // split the string
         String[] addressSplit = address.split("\\|");
 
-        // check number of items in array
         if ((addressSplit.length == 5)){
-            // if length is valid, loop through each part to check if it has something
             for (int i = 0; i < addressSplit.length; ++i){
-                //if the item is empty, throw an exception
                 if (addressSplit[i].isEmpty()){
                     throw new IllegalArgumentException("[D2 FAILED] address part " + Integer.toString(i) + "is empty.");
                 }
             }
-            // if we did not throw an exception we can return true
             return true; 
-
         }
         else if ((addressSplit.length > 5)){
             throw new IllegalArgumentException("[D2 FAILED] Address has more than 5 parts, got " + addressSplit.length + " parts.");
@@ -219,41 +145,24 @@ public class DriverValidator {
         }
         else{
             throw new IllegalArgumentException("[D2 FAILED] Address does not have 5 parts, got " + addressSplit.length + " parts.");
-            //stops "error: must return something"
         }
-        
     }
-
 
     /**
      * helper method for validating the bus drivers birthdate
-     * @param birthdate the birthdate of the driver in the following format: DD-MM-YYYY
-     * @return returns true if the rule is met
      */
     public static boolean validateBirthdate(String birthdate) {
-        // D3 Rules:
-        // - Must follow format: DD-MM-YYYY
-        // - Must be a valid calendar date (e.g., 31-02-2000 is invalid)
-
-    
-        // checks the validity of the birthdate by checking that if we use .split using the regex character '-', we get 3
-        // segments that can be converted to integers and are in a valid format.
-
-
-        // split the string
         String[] birthdateSplit = birthdate.split("-");
         
-
-        // check number of items in array
         if ((birthdateSplit.length == 3)){
-            // loop over string array birthdateSplit to ensure each section is a number
+            // Loop and ensure each section is a number
             for (int i = 0; i < birthdateSplit.length; ++i){
-                if (stringIsPosNumeric(birthdateSplit[i])){
+                // Fix: Added '!' to check if the birthday part is NOT numeric
+                if (!stringIsPosNumeric(birthdateSplit[i])){
                     throw new IllegalArgumentException("[D3 FAILED] birthday part " + i + " is not a number.");
                 }
             }
 
-            // ensure day is valid:
             int day = Integer.parseInt(birthdateSplit[0]);
             int month = Integer.parseInt(birthdateSplit[1]);
 
@@ -262,9 +171,14 @@ public class DriverValidator {
             }
 
             if (month == 2){
-                
+                // Validate February
+                int year = Integer.parseInt(birthdateSplit[2]);
+                boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+                int maxDays = isLeapYear ? 29 : 28;
+                if (day > maxDays) {
+                    throw new IllegalArgumentException("[D3 FAILED] February only has " + maxDays + " days in " + year + ", got " + day);
+                }
             }
-            // 30 days in September, April, June, and November
             else if ((month == 4) || (month == 6) || (month == 9) || (month == 11)){
                 if (day > 30){
                     throw new IllegalArgumentException("[D3 FAILED] month " + Integer.toString(month) + 
@@ -276,11 +190,7 @@ public class DriverValidator {
                     throw new IllegalArgumentException("[D3 FAILED] month " + Integer.toString(month) + 
                                                             " only has 31 days, got " + Integer.toString(day));
                 }
-                
             }
-
-
-            //ensure month is valid:
 
             if (month > 12){
                 throw new IllegalArgumentException("[D3 FAILED] month must be 12 or less, got " + Integer.toString(month));
@@ -289,17 +199,10 @@ public class DriverValidator {
                 throw new IllegalArgumentException("[D3 FAILED] month must more than or equal to 1, got " + Integer.toString(month));
             }
 
-
-            // we already check that all parts are a positive number so we dont need to validate year.
             return true;
         }
-        //set isValid to false if the number of items is invalid
         else if ((birthdateSplit.length > 3)) {
             throw new IllegalArgumentException("[D3 FAILED] birthday field has too many parts."
-                                            + Integer.toString(birthdateSplit.length));
-        }
-        else if (birthdateSplit.length > 3){
-            throw new IllegalArgumentException("[D3 FAILED] birthday field has less than 3 parts, got "
                                             + Integer.toString(birthdateSplit.length));
         }
         else {
@@ -308,143 +211,95 @@ public class DriverValidator {
         }
     }
 
-
     /**
      * Simple helper function for checking that a string is a positive number
-     * @param str string to check
-     * @return returns true if it finds no non numeric characters, false if it does
      */
     private static boolean stringIsPosNumeric(String str){
-        //loop over string to find any characters that arent a digit
         for (char ch : str.toCharArray()){
-            if (!(Character.isDigit(ch))) return false; //cut early if the char found isnt a digit
+            if (!(Character.isDigit(ch))) return false; 
         }
         return true;
     }
 
-
-
-
-
-
-
-
-    // TODO: Implement validateLicenseType() - helper for license type validation
+    /**
+     * Helper for license type validation
+     */
     public static boolean validateLicenseType(String licenseType) {
-        // Must be one of: Light, Medium, Heavy, PublicTransport
-
-        // list of valid liscence types allowed in the system
         final String[] VALID_TYPES = {"Light", "Medium", "Heavy", "PublicTransport"};
 
-
-        // for each of the valid liscence types, check if the input parameter matches
         for (String type : VALID_TYPES) {
-            // if the parameter matches the liscence type, return true.
-            if (licenseType == type) return true;
+            // Fix: Changed string comparison '==' operator to .equals()
+            if (licenseType.equals(type)) return true;
         }
-
-        // getting here means we couldnt match the input parameter with a valid liscence type,
-        // return false.
         return false;
     }
 
-    // TODO: Implement validateExperienceYears() - helper for experience validation
     public static boolean validateExperienceYears(int experienceYears) {
-        // Must be non-negative, return true if so.
         return (experienceYears >= 0);
     }
 
-    // TODO: Implement validateName() - helper for name validation
     public static boolean validateName(String name) {
-        // Must not be null or empty, return true if so
         return ((name != null) && !(name.isEmpty()) );
     }
 
-    // TODO: Implement validateLicenseUpdateRestriction() - D4
+    /**
+     * License Update Restriction (D4)
+     */
     public static boolean validateLicenseUpdateRestriction(Driver existingDriver, String newLicenseType) {
-        // D4: If driver has >10 years experience, licenseType cannot be changed
-        
-        // Constant variables
         final int RESTRICTED_YEARS_EXPERIENCE = 10;
-
-        // Driver variables
         int experience = existingDriver.getExperienceYears();
 
-        // check if the drivers experience is higher or equal to the restricted number of years
         if (experience >= RESTRICTED_YEARS_EXPERIENCE){
-            // if so check if the old liscence type and the new liscence type matches, if they dont, return false
             if (!(existingDriver.getLicenseType().equals(newLicenseType))){
                 return false;
             }
-            // otherwise, the driver is not having their liscence updated, so return true
             else {
                 return true;
             }
         }
-        // otherwise the driver has no restrictions, return true;
         else {
             return true;
         }
-
-       
     }
 
-
-    // TODO: Implement validateImmutableFields() - D5
+    /**
+     * Immutable Fields Validation (D5)
+     */
     public static boolean validateImmutableFields(Driver existingDriver, Driver updatedDriver) {
-        // D5: driverID and name cannot be modified during update
-
-        // Driver name variables
         String oldName = existingDriver.getName();
         String newName = updatedDriver.getName();
 
-        // if the names are not equal, return false as this means they are trying to change it
         if (!(oldName.equals(newName))){
             return false;
         }
         
-        // Driver ID variables
         String oldID = existingDriver.getDriverID();
         String newID = updatedDriver.getDriverID();
 
-        // if the id's are not equal, return false as this means they are trying to change it
         if (!(oldID.equals(newID))){
             return false;
         }
 
-        // return true if neither of the previous checks return false
         return true;
     }
 
-    // TODO: Implement calculateAge() - helper to calculate driver age from birthdate
+    /**
+     * Calculates driver age from birthdate
+     */
     public static int calculateAge(String birthdate) {
-        // Parse DD-MM-YYYY and calculate age using LocalDate and Period
-        
-        // validate the birthdate parameter
         if(!(validateBirthdate(birthdate))){
             throw new IllegalArgumentException("Date format is not correct.");
         }
 
-
-        //split the input string into dd mm and yyyy
         String[] dateSplit = birthdate.split("-");
         
-        // store each part as an int
-        int day = Integer.parseInt(dateSplit[0]); // day
-        int month = Integer.parseInt(dateSplit[1]); // month
-        int year = Integer.parseInt(dateSplit[2]); // year
+        int day = Integer.parseInt(dateSplit[0]); 
+        int month = Integer.parseInt(dateSplit[1]); 
+        int year = Integer.parseInt(dateSplit[2]); 
 
-        // store the ints as a LocalDate object
         LocalDate birthDate =  LocalDate.of(year, month, day);
-
-        // get the current date using the system clock
         LocalDate currDate = LocalDate.now();
 
-        // calculate the amount of years between the birthdate and the current date.
-        int years = Period.between(birthDate, currDate).getYears();
-
-
-        // return answer
-        return years;
+        return Period.between(birthDate, currDate).getYears();
     }
 }
