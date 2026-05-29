@@ -16,10 +16,31 @@ import com.busdriver.Driver;
 public class BusValidator {
 
     /**
-     * Validates the entire Bus object against B1 rules.
+     * Validates the entire Bus object.
+     * Throws an IllegalArgumentException immediately if any field is invalid.
      */
     public static boolean validateBus(Bus bus) {
-        return validateBusID(bus.getBusID()) && validateCapacity(bus.getCapacity());
+        if (bus == null) return false;
+
+        // 1. Validate Bus ID Format (will throw an exception if invalid)
+        validateBusID(bus.getBusID());
+
+        // 2. Validate Capacity (enforces B1 positive requirement)
+        if (!validateCapacity(bus.getCapacity())) {
+            throw new IllegalArgumentException("[B1 FAILED] Bus capacity must be positive (> 0), got: " + bus.getCapacity());
+        }
+
+        // 3. Validate Fuel Level (enforces non-negative requirement)
+        if (!validateFuelLevel(bus.getFuelLevel())) {
+            throw new IllegalArgumentException("[B1 FAILED] Fuel level must be non-negative (>= 0), got: " + bus.getFuelLevel());
+        }
+
+        // 4. Validate Fuel Type (enforces allowed fuel types)
+        if (!validateFuelType(bus.getFuelType())) {
+            throw new IllegalArgumentException("[B1 FAILED] Fuel type must be Diesel, Hybrid, or Electricity, got: " + bus.getFuelType());
+        }
+
+        return true;
     }
 
     /**
