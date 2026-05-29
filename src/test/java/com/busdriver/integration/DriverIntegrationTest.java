@@ -141,6 +141,8 @@ public class DriverIntegrationTest {
         // 3. Call repository.update(updatedDriver)
         Driver retrieved = repository.retrieve("23@@5678AB");
         assertNotNull(retrieved);
+        assertEquals("23@@5678AB", retrieved.getDriverID());
+        assertEquals("John Smith", retrieved.getName());
         assertEquals(6, retrieved.getExperienceYears());
         assertEquals("Medium", retrieved.getLicenseType());
         assertEquals("99|Lonsdale Street|Melbourne|VIC|Australia", retrieved.getAddress());
@@ -175,8 +177,46 @@ public class DriverIntegrationTest {
     @DisplayName("IT-D4: Driver count is updated correctly after operations")
     void testCountUpdatedCorrectly() {
         // 1. Assert count == 0
+        assertEquals(0, repository.count());
+
         // 2. Add driver1, assert count == 1
-        // 3. Add driver2, assert count == 2
+        Driver driver1 = new Driver(
+            "23@@5678AB",
+            "John Smith",
+            5,
+            "Light",
+            "12|King Street|Melbourne|VIC|Australia",
+            "01-01-2000"
+        );
+
+        Driver driver2 = new Driver(
+            "24##6789CD",
+            "Alice Brown",
+            3,
+            "Medium",
+            "25|Queen Street|Melbourne|VIC|Australia",
+            "02-02-2001"
+        );
+
+        
         // 4. Add driver3, assert count == 3
+        Driver driver3 = new Driver(
+            "25$$7890EF",
+            "Mark Lee",
+            7,
+            "Heavy",
+            "40|Collins Street|Melbourne|VIC|Australia",
+            "03-03-1999"
+        );
+
+        repository.add(driver1);
+        assertEquals(1, repository.count());
+
+        repository.add(driver2);
+        assertEquals(2, repository.count());
+
+        repository.add(driver3);
+        assertEquals(3, repository.count());
+    
     }
 }
