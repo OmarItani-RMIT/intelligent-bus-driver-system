@@ -32,7 +32,7 @@ public class BusUnitTest {
         @DisplayName("B1.1 - Valid bus ID with exactly 8 digits should pass")
         void testValidBusID() {
             // Valid: "12345678" (8 digits)
-            assertTrue(BsValidator.validateBusID("12345678"));
+            assertTrue(BusValidator.validateBusID("12345678"));
         }
 
         // TODO: B1.2 - Bus ID with wrong length is rejected (invalid input)
@@ -41,7 +41,7 @@ public class BusUnitTest {
         void testBusIDIncorrectLength() {
             // Test too short (6 chars) and too long (10 chars)
             assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("123456"));
-            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusId("1234567890"));
+            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("1234567890"));
         }
 
         // TODO: B1.3 - Bus ID with non-digit chars is rejected (edge case)
@@ -51,7 +51,7 @@ public class BusUnitTest {
             // Test with letters, special chars, and null
             assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("12AB5678"));
             assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("12@45678"));
-            assertThrows(NullPointerException.class, () > BusValidator.validateBusID(null));
+            assertThrows(NullPointerException.class, () -> BusValidator.validateBusID(null));
         }
     }
 
@@ -61,7 +61,10 @@ public class BusUnitTest {
         // TODO: B2.1 - Decreasing capacity is allowed (normal case)
         @Test
         @DisplayName("B2.1 - Decreasing bus capacity during update should be allowed")
-        void testDecreaseCapacityAllowed() {}
+        void testDecreaseCapacityAllowed() {
+            Bus existingBus = new Bus("12345678", 50, 80.0, "Diesel");
+            assertTrue(BusValidator.validateCapacityUpdate(existinBus, 45));
+        }
 
         // TODO: B2.2 - Increasing capacity is rejected (invalid input)
         @Test
