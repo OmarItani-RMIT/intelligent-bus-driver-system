@@ -32,6 +32,7 @@ public class BusUnitTest {
         @DisplayName("B1.1 - Valid bus ID with exactly 8 digits should pass")
         void testValidBusID() {
             // Valid: "12345678" (8 digits)
+            assertTrue(BsValidator.validateBusID("12345678"));
         }
 
         // TODO: B1.2 - Bus ID with wrong length is rejected (invalid input)
@@ -39,6 +40,8 @@ public class BusUnitTest {
         @DisplayName("B1.2 - Bus ID with incorrect length should be rejected")
         void testBusIDIncorrectLength() {
             // Test too short (6 chars) and too long (10 chars)
+            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("123456"));
+            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusId("1234567890"));
         }
 
         // TODO: B1.3 - Bus ID with non-digit chars is rejected (edge case)
@@ -46,6 +49,9 @@ public class BusUnitTest {
         @DisplayName("B1.3 - Bus ID with non-digit characters should be rejected")
         void testBusIDNonDigitCharacters() {
             // Test with letters, special chars, and null
+            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("12AB5678"));
+            assertThrows(IllegalArgumentException.class, () -> BusValidator.validateBusID("12@45678"));
+            assertThrows(NullPointerException.class, () > BusValidator.validateBusID(null));
         }
     }
 
