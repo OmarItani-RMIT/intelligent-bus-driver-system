@@ -8,10 +8,14 @@ Developed as part of Assignment 4 (ISYS3413/ISYS3475/ISYS1118).
 ```
 intelligent-bus-driver-system/
 ├── .github/workflows/ci.yml
+├── data/
+│   ├── test_buses.txt
+│   └── test_drivers.txt
 ├── src/
 │   ├── main/java/com/busdriver/
 │   │   ├── Bus.java
 │   │   ├── Driver.java
+│   │   ├── Main.java
 │   │   ├── exception/ValidationException.java
 │   │   ├── repository/BusRepository.java
 │   │   ├── repository/DriverRepository.java
@@ -30,10 +34,19 @@ intelligent-bus-driver-system/
 - Java 17+
 - Maven 3.8+
 
-## Build & Test
+## Build, Test & Run
+
+### Compiling and Running
+To compile the system and run the local demonstration runner (which reads database files from `data/`):
 ```bash
-mvn compile          # Build
-mvn test             # Run all tests
+mvn compile
+mvn exec:java -Dexec.mainClass="com.busdriver.Main"
+```
+
+### Testing Suite
+To execute all 39 unit and integration test assertions:
+```bash
+mvn test                                        # Run all tests
 mvn test -Dtest="com.busdriver.unit.*"          # Unit tests only
 mvn test -Dtest="com.busdriver.integration.*"   # Integration tests only
 ```
