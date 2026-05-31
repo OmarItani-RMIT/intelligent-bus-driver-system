@@ -63,7 +63,7 @@ public class BusUnitTest {
         @DisplayName("B2.1 - Decreasing bus capacity during update should be allowed")
         void testDecreaseCapacityAllowed() {
             Bus existingBus = new Bus("12345678", 50, 80.0, "Diesel");
-            assertTrue(BusValidator.validateCapacityUpdate(existinBus, 45));
+            assertTrue(BusValidator.validateCapacityUpdate(existingBus, 45));
         }
 
         // TODO: B2.2 - Increasing capacity is rejected (invalid input)
