@@ -31,7 +31,7 @@ intelligent-bus-driver-system/
 ```
 
 ## Requirements
-- Java 17+
+- Java 21+
 - Maven 3.8+
 
 ## Build, Test & Run
