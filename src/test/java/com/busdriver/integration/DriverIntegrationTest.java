@@ -5,18 +5,11 @@ import com.busdriver.repository.DriverRepository;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for Driver-related operations.
- * Uses real TXT files and real implementations of DriverRepository.
- *
- * Required: At least 4 integration test cases verifying:
- *   1. Valid drivers are stored correctly
- *   2. Invalid drivers are rejected
- *   3. Updates are persisted correctly
- *   4. Record counts are updated correctly
+ * Integration tests for Driver storage operations using flat files.
+ * Validates adding, retrieving, updating, and repository record counters.
  */
 @DisplayName("Driver Integration Tests")
 public class DriverIntegrationTest {
@@ -26,30 +19,28 @@ public class DriverIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // TODO: Create data directory if needed
+        // Setup local workspace directory
         File dataDir = new File("data");
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
-        // TODO: Initialize repository and clear test data
+        // Initialize Driver repository and empty past data
         repository = new DriverRepository(TEST_FILE_PATH);
         repository.clear();
     }
 
     @AfterEach
     void tearDown() {
-        // TODO: Clean up test file
+        // Clean up temporary local workspace test files
         File testFile = new File(TEST_FILE_PATH);
         if (testFile.exists()) {
             testFile.delete();
         }
     }
 
-    // TODO: IT-D1 - Valid drivers are stored correctly in TXT file
     @Test
     @DisplayName("IT-D1: Valid drivers are stored correctly in TXT file")
     void testValidDriverStoredCorrectly() {
-        // 1. Create a valid Driver
         Driver driver = new Driver(
             "23@@5678AB",
             "John Smith",
@@ -58,11 +49,10 @@ public class DriverIntegrationTest {
             "12|King Street|Melbourne|VIC|Australia",
             "01-01-2000"
         );
-        // 2. Call repository.add(driver)
+
         assertTrue(repository.add(driver));
-        // 3. Call repository.retrieve(driverID)
+
         Driver retrieved = repository.retrieve("23@@5678AB");
-        // 4. Assert all fields match
         assertNotNull(retrieved);
         assertEquals("23@@5678AB", retrieved.getDriverID());
         assertEquals("John Smith", retrieved.getName());
@@ -72,52 +62,51 @@ public class DriverIntegrationTest {
         assertEquals("01-01-2000", retrieved.getBirthdate());
     }
 
-    // TODO: IT-D2 - Invalid drivers are rejected and not stored
     @Test
     @DisplayName("IT-D2: Invalid drivers are rejected and not stored")
     void testInvalidDriversRejected() {
-        // 1. Try adding driver with invalid ID -> assertThrows
+        // Rejects invalid ID format
         assertThrows(IllegalArgumentException.class, () ->
             new Driver(
-                    "1A@5678AB",
-                    "John Smith",
-                    5,
-                    "Light",
-                    "12|King Street|Melbourne|VIC|Australia",
-                    "01-01-2000"
+                "1A@5678AB",
+                "John Smith",
+                5,
+                "Light",
+                "12|King Street|Melbourne|VIC|Australia",
+                "01-01-2000"
             )
         );
-        // 2. Try adding driver with invalid address -> assertThrows
+
+        // Rejects invalid address field split length
         assertThrows(IllegalArgumentException.class, () ->
             new Driver(
-                    "23@@5678AB",
-                    "John Smith",
-                    5,
-                    "Light",
-                    "12|King Street|Melbourne|VIC",
-                    "01-01-2000"
+                "23@@5678AB",
+                "John Smith",
+                5,
+                "Light",
+                "12|King Street|Melbourne|VIC",
+                "01-01-2000"
             )
         );
-        // 3. Try adding driver with invalid birthdate -> assertThrows
+
+        // Rejects invalid date formatting delimiters
         assertThrows(IllegalArgumentException.class, () ->
             new Driver(
-                    "24##6789CD",
-                    "Alice Brown",
-                    3,
-                    "Medium",
-                    "25|Queen Street|Melbourne|VIC|Australia",
-                    "2000/01/01"
+                "24##6789CD",
+                "Alice Brown",
+                3,
+                "Medium",
+                "25|Queen Street|Melbourne|VIC|Australia",
+                "2000/01/01"
             )
         );
-        // 4. Assert count == 0
+
         assertEquals(0, repository.count());
     }
 
-    // TODO: IT-D3 - Driver updates are persisted correctly
     @Test
     @DisplayName("IT-D3: Driver updates are persisted correctly in TXT file")
     void testUpdatesPersistedCorrectly() {
-        // 1. Add a valid driver
         Driver originalDriver = new Driver(
             "23@@5678AB",
             "John Smith",
@@ -127,7 +116,7 @@ public class DriverIntegrationTest {
             "01-01-2000"
         );
         repository.add(originalDriver);
-        // 2. Create updated driver (same ID, different fields)
+
         Driver updatedDriver = new Driver(
             "23@@5678AB",
             "John Smith",
@@ -138,7 +127,7 @@ public class DriverIntegrationTest {
         );
 
         assertTrue(repository.update(updatedDriver));
-        // 3. Call repository.update(updatedDriver)
+
         Driver retrieved = repository.retrieve("23@@5678AB");
         assertNotNull(retrieved);
         assertEquals("23@@5678AB", retrieved.getDriverID());
@@ -147,7 +136,6 @@ public class DriverIntegrationTest {
         assertEquals("Medium", retrieved.getLicenseType());
         assertEquals("99|Lonsdale Street|Melbourne|VIC|Australia", retrieved.getAddress());
 
-        // 4. Retrieve and assert updated fields
         Driver experiencedDriver = new Driver(
             "24##6789CD",
             "Alice Brown",
@@ -158,6 +146,7 @@ public class DriverIntegrationTest {
         );
         repository.add(experiencedDriver);
 
+        // Block license update modifications for drivers with >10 years exp (D4)
         Driver invalidLicenseChange = new Driver(
             "24##6789CD",
             "Alice Brown",
@@ -172,14 +161,11 @@ public class DriverIntegrationTest {
         );
     }
 
-    // TODO: IT-D4 - Driver count is updated correctly
     @Test
     @DisplayName("IT-D4: Driver count is updated correctly after operations")
     void testCountUpdatedCorrectly() {
-        // 1. Assert count == 0
         assertEquals(0, repository.count());
 
-        // 2. Add driver1, assert count == 1
         Driver driver1 = new Driver(
             "23@@5678AB",
             "John Smith",
@@ -198,8 +184,6 @@ public class DriverIntegrationTest {
             "02-02-2001"
         );
 
-        
-        // 4. Add driver3, assert count == 3
         Driver driver3 = new Driver(
             "25$$7890EF",
             "Mark Lee",
@@ -217,6 +201,5 @@ public class DriverIntegrationTest {
 
         repository.add(driver3);
         assertEquals(3, repository.count());
-    
     }
 }
